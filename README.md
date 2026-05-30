@@ -45,53 +45,24 @@ A full-stack Expense Tracker application built using React and Spring Boot with 
 
 ## 📸 Screenshots
 
-(Add your images here)
+### Login Page
+![Login](screenshots/login.png)
 
-Example:
-- Login Page
-- Dashboard
-- Expense List
-- Charts
-- PDF Export
+### Register Page
+![Register](screenshots/register.png)
 
----
+### Dashboard
+![Dashboard](screenshots/dashboard.png)
 
-## ⚙️ Setup Instructions
+### Add Expense
+![Add Expense](screenshots/add-expense.png)
 
-### Backend
-```bash
-cd backend
-mvn clean install
-mvn spring-boot:run
-````
+### Expense List
+![Expense List](screenshots/expense-list.png)
 
-### Frontend
+### Report / PDF
+![Report](screenshots/report.png)
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
----
-
-## 🗄️ Database Setup
-
-Create MySQL database:
-
-```sql
-CREATE DATABASE expense_tracker;
-```
-
-Update `application.properties`:
-
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/expense_tracker
-spring.datasource.username=root
-spring.datasource.password=your_password
-```
-
----
 
 ## 🎯 Future Improvements
 
