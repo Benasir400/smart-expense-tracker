@@ -1,228 +1,150 @@
 import { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-
-import {
-    FaUser,
-    FaEnvelope,
-    FaMoneyBillWave,
-    FaEdit,
-    FaSave
-} from "react-icons/fa";
+import { FaUser, FaEnvelope, FaEdit, FaSave, FaSignOutAlt, FaPhone, FaMoneyBillWave } from "react-icons/fa";
 
 function Profile() {
 
-    const [editing, setEditing] =
-        useState(false);
+    const navigate = useNavigate();
+    const [editing, setEditing] = useState(false);
 
-    const [profile, setProfile] =
-        useState({
+    const [profile, setProfile] = useState({
+        name: localStorage.getItem("userName") || "",
+        email: localStorage.getItem("userEmail") || "",
+        phone: localStorage.getItem("userPhone") || "",
+        salary: localStorage.getItem("salary") || ""
+    });
 
-            name:
-                localStorage.getItem(
-                    "userName"
-                ) || "",
-
-            email:
-                localStorage.getItem(
-                    "userEmail"
-                ) || "",
-
-            phone:
-                localStorage.getItem(
-                    "userPhone"
-                ) || "",
-
-            salary:
-                localStorage.getItem(
-                    "salary"
-                ) || ""
-        });
-
-    // Handle Change
     const handleChange = (e) => {
-
         setProfile({
-
             ...profile,
-
-            [e.target.name]:
-                e.target.value
+            [e.target.name]: e.target.value
         });
     };
 
-    // Save Profile
     const handleSave = () => {
+        localStorage.setItem("userName", profile.name);
+        localStorage.setItem("userEmail", profile.email);
+        localStorage.setItem("userPhone", profile.phone);
+        localStorage.setItem("salary", profile.salary);
 
-        localStorage.setItem(
-            "userName",
-            profile.name
-        );
-
-        localStorage.setItem(
-            "userEmail",
-            profile.email
-        );
-
-        localStorage.setItem(
-            "userPhone",
-            profile.phone
-        );
-
-        localStorage.setItem(
-            "salary",
-            profile.salary
-        );
-
-        alert(
-            "Profile Updated Successfully"
-        );
-
+        alert("Profile Updated Successfully");
         setEditing(false);
     };
 
+    const handleLogout = () => {
+        localStorage.clear();
+        navigate("/");
+    };
+
     return (
+        <div className="flex min-h-screen bg-gradient-to-br from-[#0b1f3a] to-[#142a4f]">
 
-        <div className="flex">
-
-            {/* Sidebar */}
             <Sidebar />
 
-            {/* Main Content */}
-            <div className="flex-1 min-h-screen bg-gray-100 p-8">
+            <div className="flex-1 p-10">
 
                 {/* Heading */}
-                <div className="mb-8">
-
-                    <h1 className="text-4xl font-bold">
-
-                        My Profile
-
-                    </h1>
-
-                    <p className="text-gray-500 mt-2">
-
-                        Manage your account details
-
-                    </p>
-
+                <div className="mb-8 text-white">
+                    <h1 className="text-4xl font-bold">My Profile</h1>
+                    <p className="text-gray-300 mt-2">Manage your account details</p>
                 </div>
 
-                {/* Profile Card */}
-                <div className="bg-white rounded-2xl shadow-lg p-8 max-w-3xl">
+                {/* Card */}
+                <div className="bg-white max-w-3xl mx-auto rounded-2xl shadow-2xl p-8">
 
-                    {/* Profile Image */}
-                    <div className="flex justify-center mb-8">
-
+                    {/* Avatar */}
+                    <div className="flex justify-center mb-6">
                         <img
                             src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                            className="w-28 h-28 rounded-full border-4 border-[#0b1f3a]"
                             alt="profile"
-                            className="w-32 h-32 rounded-full border-4 border-blue-500"
                         />
-
                     </div>
 
                     {/* Name */}
-                    <div className="mb-5">
-
-                        <label className="font-semibold flex items-center gap-2 mb-2">
-
-                            <FaUser />
-
-                            Name
-
+                    <div className="mb-4">
+                        <label className="flex items-center gap-2 font-semibold text-[#0b1f3a]">
+                            <FaUser /> Name
                         </label>
-
                         <input
-                            type="text"
                             name="name"
-                            placeholder="Enter Your Name"
                             value={profile.name}
                             onChange={handleChange}
                             disabled={!editing}
-                            className="w-full border p-3 rounded-lg"
+                            className="w-full border p-3 rounded-lg mt-2 focus:border-[#0b1f3a] outline-none"
                         />
-
                     </div>
 
                     {/* Email */}
-                    <div className="mb-5">
-
-                        <label className="font-semibold flex items-center gap-2 mb-2">
-
-                            <FaEnvelope />
-
-                            Email
-
+                    <div className="mb-4">
+                        <label className="flex items-center gap-2 font-semibold text-[#0b1f3a]">
+                            <FaEnvelope /> Email
                         </label>
-
                         <input
-                            type="email"
                             name="email"
                             value={profile.email}
                             disabled
-                            className="w-full border p-3 rounded-lg bg-gray-100"
+                            className="w-full border p-3 rounded-lg mt-2 bg-gray-100"
                         />
-
                     </div>
 
-        
+                    {/* Phone */}
+                    <div className="mb-4">
+                        <label className="flex items-center gap-2 font-semibold text-[#0b1f3a]">
+                            <FaPhone /> Phone
+                        </label>
+                        <input
+                            name="phone"
+                            value={profile.phone}
+                            onChange={handleChange}
+                            disabled={!editing}
+                            className="w-full border p-3 rounded-lg mt-2 focus:border-[#0b1f3a] outline-none"
+                        />
+                    </div>
 
                     {/* Salary */}
-                    <div className="mb-8">
-
-                        <label className="font-semibold flex items-center gap-2 mb-2">
-
-                            <FaMoneyBillWave />
-
-                            Monthly Salary
-
+                    <div className="mb-6">
+                        <label className="flex items-center gap-2 font-semibold text-[#0b1f3a]">
+                            <FaMoneyBillWave /> Salary
                         </label>
-
                         <input
-                            type="number"
                             name="salary"
-                            placeholder="Enter Monthly Salary"
                             value={profile.salary}
                             onChange={handleChange}
                             disabled={!editing}
-                            className="w-full border p-3 rounded-lg"
+                            className="w-full border p-3 rounded-lg mt-2 focus:border-[#0b1f3a] outline-none"
                         />
-
                     </div>
 
                     {/* Buttons */}
                     <div className="flex gap-4">
 
                         {!editing ? (
-
                             <button
-                                onClick={() =>
-                                    setEditing(true)
-                                }
-                                className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg flex items-center gap-2"
+                                onClick={() => setEditing(true)}
+                                className="bg-[#0b1f3a] hover:bg-[#142a4f] text-white px-6 py-3 rounded-lg flex items-center gap-2"
                             >
-
                                 <FaEdit />
-
                                 Edit Profile
-
                             </button>
-
                         ) : (
-
                             <button
                                 onClick={handleSave}
-                                className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg flex items-center gap-2"
+                                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg flex items-center gap-2"
                             >
-
                                 <FaSave />
-
-                                Save Profile
-
+                                Save
                             </button>
-
                         )}
+
+                        <button
+                            onClick={handleLogout}
+                            className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg flex items-center gap-2"
+                        >
+                            <FaSignOutAlt />
+                            Logout
+                        </button>
 
                     </div>
 

@@ -1,168 +1,101 @@
 import { useState } from "react";
-
-import {
-    Link,
-    useNavigate
-} from "react-router-dom";
-
-import {
-    FaEnvelope,
-    FaLock,
-    FaSignInAlt
-} from "react-icons/fa";
-
-import { loginUser }
-from "../services/authService";
+import { Link, useNavigate } from "react-router-dom";
+import { FaEnvelope, FaLock, FaSignInAlt } from "react-icons/fa";
+import { loginUser } from "../services/authService";
 
 function Login() {
 
-    const navigate =
-        useNavigate();
+    const navigate = useNavigate();
 
-    const [formData, setFormData] =
-        useState({
-            email: "",
-            password: ""
-        });
+    const [formData, setFormData] = useState({
+        email: "",
+        password: ""
+    });
 
-    // Handle Input Change
     const handleChange = (e) => {
-
         setFormData({
             ...formData,
-            [e.target.name]:
-                e.target.value
+            [e.target.name]: e.target.value
         });
     };
 
-    // Handle Login
     const handleSubmit = async (e) => {
-
         e.preventDefault();
 
         try {
+            const response = await loginUser(formData);
 
-            const response =
-                await loginUser(formData);
-
-            // Login Success
             if (response.data.token) {
 
-                // Save Token
-                localStorage.setItem(
-                    "token",
-                    response.data.token
-                );
+                localStorage.setItem("token", response.data.token);
+                localStorage.setItem("userEmail", response.data.email);
+                localStorage.setItem("userName", response.data.name);
+                localStorage.setItem("userPhone", response.data.phone);
 
-                // Save User Email
-                localStorage.setItem(
-                    "userEmail",
-                    formData.email
-                );
-
-                alert(
-                    "Login Successful"
-                );
-
+                alert("Login Successful");
                 navigate("/dashboard");
-
             } else {
-
-                alert(
-                    response.data.message
-                );
+                alert(response.data.message);
             }
 
         } catch (error) {
-
             console.log(error);
-
-            alert(
-                "Login Failed"
-            );
+            alert("Login Failed");
         }
     };
 
     return (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0b1f3a] to-[#142a4f]">
 
-        <div className="min-h-screen flex justify-center items-center bg-gradient-to-r from-blue-500 to-purple-600 p-4">
+            <form onSubmit={handleSubmit}
+                className="bg-white w-full max-w-md p-10 rounded-2xl shadow-2xl">
 
-            <form
-                onSubmit={handleSubmit}
-                className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md"
-            >
-
-                {/* Heading */}
-                <h2 className="text-4xl font-bold text-center mb-8 text-gray-800">
-
-                    Login
-
+                <h2 className="text-3xl font-bold text-center text-[#0b1f3a] mb-8">
+                    Welcome Back
                 </h2>
 
                 {/* Email */}
-                <div className="flex items-center border rounded-lg p-3 mb-5">
-
-                    <FaEnvelope
-                        className="text-gray-500 mr-3"
-                    />
-
+                <div className="flex items-center border border-gray-300 rounded-lg p-3 mb-5 focus-within:border-[#0b1f3a]">
+                    <FaEnvelope className="text-[#0b1f3a] mr-2" />
                     <input
                         type="email"
                         name="email"
-                        placeholder="Enter Email"
+                        placeholder="Email Address"
                         value={formData.email}
                         onChange={handleChange}
-                        className="outline-none w-full"
+                        className="w-full outline-none"
                         required
                     />
-
                 </div>
 
                 {/* Password */}
-                <div className="flex items-center border rounded-lg p-3 mb-6">
-
-                    <FaLock
-                        className="text-gray-500 mr-3"
-                    />
-
+                <div className="flex items-center border border-gray-300 rounded-lg p-3 mb-6 focus-within:border-[#0b1f3a]">
+                    <FaLock className="text-[#0b1f3a] mr-2" />
                     <input
                         type="password"
                         name="password"
-                        placeholder="Enter Password"
+                        placeholder="Password"
                         value={formData.password}
                         onChange={handleChange}
-                        className="outline-none w-full"
+                        className="w-full outline-none"
                         required
                     />
-
                 </div>
 
-                {/* Login Button */}
+                {/* Button */}
                 <button
-                    type="submit"
-                    className="bg-blue-500 hover:bg-blue-600 text-white w-full p-3 rounded-lg flex justify-center items-center gap-2 text-lg transition"
+                    className="w-full bg-[#0b1f3a] hover:bg-[#142a4f] text-white py-3 rounded-lg flex justify-center items-center gap-2 font-semibold transition"
                 >
-
                     <FaSignInAlt />
-
                     Login
-
                 </button>
 
-                {/* Register Link */}
+                {/* Footer */}
                 <p className="text-center mt-6 text-gray-600">
-
-                    Don't have an account?
-
-                    <Link
-                        to="/register"
-                        className="text-blue-500 font-semibold ml-2"
-                    >
-
+                    Don’t have an account?
+                    <Link to="/register" className="text-[#0b1f3a] font-semibold ml-2">
                         Register
-
                     </Link>
-
                 </p>
 
             </form>
