@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import {
-    getExpenses,
+    getUserExpenses,
     deleteExpense,
     updateExpense
 } from "../services/expenseService";
@@ -17,6 +17,7 @@ import ExportPDF from "./ExportPDF";
 
 function ExpenseList() {
 
+    // States
     const [expenses, setExpenses] =
         useState([]);
 
@@ -31,30 +32,41 @@ function ExpenseList() {
             title: "",
             amount: "",
             category: "",
-            date: ""
+            date: "",
+            userEmail: ""
         });
 
-    useEffect(() => {
-
-        fetchExpenses();
-
-    }, []);
-
-    // Fetch Expenses
+    // Fetch User Expenses
     const fetchExpenses = async () => {
 
         try {
 
-            const response =
-                await getExpenses();
+            const email =
+                localStorage.getItem(
+                    "userEmail"
+                );
 
-            setExpenses(response.data);
+            const response =
+                await getUserExpenses(
+                    email
+                );
+
+            setExpenses(
+                response.data
+            );
 
         } catch (error) {
 
             console.log(error);
         }
     };
+
+    // useEffect
+    useEffect(() => {
+
+        fetchExpenses();
+
+    }, []);
 
     // Delete Expense
     const handleDelete = async (id) => {
@@ -84,7 +96,8 @@ function ExpenseList() {
             title: expense.title,
             amount: expense.amount,
             category: expense.category,
-            date: expense.date
+            date: expense.date,
+            userEmail: expense.userEmail
         });
     };
 
@@ -139,7 +152,9 @@ function ExpenseList() {
             <div className="flex flex-col md:flex-row justify-between items-center mb-5 gap-4">
 
                 <h2 className="text-3xl font-bold">
+
                     Expense List
+
                 </h2>
 
                 <ExportPDF
@@ -148,7 +163,7 @@ function ExpenseList() {
 
             </div>
 
-            {/* Search Box */}
+            {/* Search */}
             <div className="flex items-center border rounded p-3 mb-5 bg-white shadow">
 
                 <FaSearch
@@ -229,7 +244,7 @@ function ExpenseList() {
                                             <input
                                                 type="text"
                                                 value={editedExpense.title}
-                                                placeholder="Eg: Pizza, Bus Ticket, Netflix, Shopping"
+                                                placeholder="Eg: Pizza, Netflix, Shopping"
                                                 onChange={(e) =>
                                                     setEditedExpense({
                                                         ...editedExpense,
@@ -355,7 +370,7 @@ function ExpenseList() {
 
                                     </td>
 
-                                    {/* Buttons */}
+                                    {/* Actions */}
                                     <td className="border p-3">
 
                                         <div className="flex gap-2 justify-center">

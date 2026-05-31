@@ -10,10 +10,12 @@ function BudgetAlert() {
 
     const budgetLimit = 10000;
 
-    useEffect(() => {
-        fetchExpenses();
-    }, []);
+    // ✅ FIRST declare function
+     useEffect(() => {
 
+        fetchExpenses();
+
+    }, []);
     const fetchExpenses = async () => {
 
         try {
@@ -29,10 +31,17 @@ function BudgetAlert() {
         }
     };
 
+    // ✅ THEN use it
+   
+
+    // Total Expense
     const totalExpense =
         expenses.reduce(
+
             (total, item) =>
+
                 total + Number(item.amount),
+
             0
         );
 
@@ -44,7 +53,9 @@ function BudgetAlert() {
 
                 <div className="bg-red-500 text-white p-4 rounded shadow">
 
-                    Warning! Budget limit exceeded.
+                    ⚠ Warning! Budget limit exceeded.
+
+                    <br />
 
                     Total Expense:
                     ₹ {totalExpense}

@@ -25,6 +25,7 @@ function Login() {
             password: ""
         });
 
+    // Handle Input Change
     const handleChange = (e) => {
 
         setFormData({
@@ -34,6 +35,7 @@ function Login() {
         });
     };
 
+    // Handle Login
     const handleSubmit = async (e) => {
 
         e.preventDefault();
@@ -43,11 +45,19 @@ function Login() {
             const response =
                 await loginUser(formData);
 
+            // Login Success
             if (response.data.token) {
 
+                // Save Token
                 localStorage.setItem(
                     "token",
                     response.data.token
+                );
+
+                // Save User Email
+                localStorage.setItem(
+                    "userEmail",
+                    formData.email
                 );
 
                 alert(
@@ -67,7 +77,9 @@ function Login() {
 
             console.log(error);
 
-            alert("Login Failed");
+            alert(
+                "Login Failed"
+            );
         }
     };
 
@@ -80,6 +92,7 @@ function Login() {
                 className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md"
             >
 
+                {/* Heading */}
                 <h2 className="text-4xl font-bold text-center mb-8 text-gray-800">
 
                     Login
@@ -89,7 +102,9 @@ function Login() {
                 {/* Email */}
                 <div className="flex items-center border rounded-lg p-3 mb-5">
 
-                    <FaEnvelope className="text-gray-500 mr-3" />
+                    <FaEnvelope
+                        className="text-gray-500 mr-3"
+                    />
 
                     <input
                         type="email"
@@ -106,7 +121,9 @@ function Login() {
                 {/* Password */}
                 <div className="flex items-center border rounded-lg p-3 mb-6">
 
-                    <FaLock className="text-gray-500 mr-3" />
+                    <FaLock
+                        className="text-gray-500 mr-3"
+                    />
 
                     <input
                         type="password"
@@ -120,10 +137,10 @@ function Login() {
 
                 </div>
 
-                {/* Button */}
+                {/* Login Button */}
                 <button
                     type="submit"
-                    className="bg-blue-500 hover:bg-blue-600 text-white w-full p-3 rounded-lg flex justify-center items-center gap-2 text-lg"
+                    className="bg-blue-500 hover:bg-blue-600 text-white w-full p-3 rounded-lg flex justify-center items-center gap-2 text-lg transition"
                 >
 
                     <FaSignInAlt />
@@ -141,7 +158,9 @@ function Login() {
                         to="/register"
                         className="text-blue-500 font-semibold ml-2"
                     >
+
                         Register
+
                     </Link>
 
                 </p>
