@@ -44,7 +44,7 @@ function ExportPDF({ expenses }) {
 
         <button
             onClick={downloadPDF}
-            className="bg-purple-600 text-white px-4 py-2 rounded mb-4"
+            className="bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-3 rounded-xl flex items-center gap-2 hover:scale-105 transition"
         >
             Export PDF
         </button>

@@ -1,11 +1,20 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaEnvelope, FaLock, FaSignInAlt } from "react-icons/fa";
+import {
+    FaEnvelope,
+    FaLock,
+    FaSignInAlt,
+    FaWallet,
+    FaEye,
+    FaEyeSlash
+} from "react-icons/fa";
 import { loginUser } from "../services/authService";
 
 function Login() {
 
     const navigate = useNavigate();
+
+    const [showPassword, setShowPassword] = useState(false);
 
     const [formData, setFormData] = useState({
         email: "",
@@ -20,9 +29,11 @@ function Login() {
     };
 
     const handleSubmit = async (e) => {
+
         e.preventDefault();
 
         try {
+
             const response = await loginUser(formData);
 
             if (response.data.token) {
@@ -33,75 +44,231 @@ function Login() {
                 localStorage.setItem("userPhone", response.data.phone);
 
                 alert("Login Successful");
+
                 navigate("/dashboard");
+
             } else {
+
                 alert(response.data.message);
+
             }
 
         } catch (error) {
+
             console.log(error);
             alert("Login Failed");
+
         }
+
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0b1f3a] to-[#142a4f]">
 
-            <form onSubmit={handleSubmit}
-                className="bg-white w-full max-w-md p-10 rounded-2xl shadow-2xl">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 relative overflow-hidden px-4">
 
-                <h2 className="text-3xl font-bold text-center text-[#0b1f3a] mb-8">
-                    Welcome Back
-                </h2>
+            {/* Background Glow Effects */}
+            <div className="absolute top-0 left-0 w-96 h-96 bg-cyan-500/20 rounded-full blur-[150px]" />
 
-                {/* Email */}
-                <div className="flex items-center border border-gray-300 rounded-lg p-3 mb-5 focus-within:border-[#0b1f3a]">
-                    <FaEnvelope className="text-[#0b1f3a] mr-2" />
-                    <input
-                        type="email"
-                        name="email"
-                        placeholder="Email Address"
-                        value={formData.email}
-                        onChange={handleChange}
-                        className="w-full outline-none"
-                        required
-                    />
-                </div>
+            <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/20 rounded-full blur-[150px]" />
 
-                {/* Password */}
-                <div className="flex items-center border border-gray-300 rounded-lg p-3 mb-6 focus-within:border-[#0b1f3a]">
-                    <FaLock className="text-[#0b1f3a] mr-2" />
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="Password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        className="w-full outline-none"
-                        required
-                    />
-                </div>
+            <div className="absolute top-1/2 left-1/2 w-80 h-80 bg-blue-500/10 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2" />
 
-                {/* Button */}
-                <button
-                    className="w-full bg-[#0b1f3a] hover:bg-[#142a4f] text-white py-3 rounded-lg flex justify-center items-center gap-2 font-semibold transition"
+            {/* Floating Dots */}
+            <div className="absolute top-20 left-20 w-4 h-4 bg-cyan-400 rounded-full animate-ping"></div>
+
+            <div className="absolute bottom-24 right-24 w-3 h-3 bg-purple-400 rounded-full animate-bounce"></div>
+
+            <div className="absolute top-1/3 right-32 w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+
+            {/* Login Card */}
+            <div className="relative z-10 w-full max-w-md">
+
+                <form
+                    onSubmit={handleSubmit}
+                    className="
+                    backdrop-blur-xl
+                    bg-white/10
+                    border border-white/20
+                    rounded-[32px]
+                    shadow-[0_20px_80px_rgba(0,0,0,0.4)]
+                    p-8
+                    "
                 >
-                    <FaSignInAlt />
-                    Login
-                </button>
 
-                {/* Footer */}
-                <p className="text-center mt-6 text-gray-600">
-                    Don’t have an account?
-                    <Link to="/register" className="text-[#0b1f3a] font-semibold ml-2">
-                        Register
-                    </Link>
-                </p>
+                    {/* Logo */}
+                    <div className="flex justify-center mb-5">
 
-            </form>
+                        <div className="bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 p-5 rounded-3xl shadow-lg">
+
+                            <FaWallet className="text-white text-4xl" />
+
+                        </div>
+
+                    </div>
+
+                    {/* Brand */}
+                    <h2 className="text-center text-white text-2xl font-bold mb-2">
+                        ExpenseTracker Pro
+                    </h2>
+
+                    <p className="text-center text-slate-300 mb-8">
+                        Welcome back! Login to continue
+                    </p>
+
+                   
+
+                    {/* Email */}
+                    <div className="mb-5">
+
+                        <label className="block text-slate-200 text-sm font-medium mb-2">
+                            Email Address
+                        </label>
+
+                        <div className="flex items-center bg-white/10 border border-white/20 rounded-2xl px-4 py-4 focus-within:border-cyan-400 transition">
+
+                            <FaEnvelope className="text-slate-400 mr-3" />
+
+                            <input
+                                type="email"
+                                name="email"
+                                placeholder="Enter your email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                className="w-full bg-transparent outline-none text-white placeholder-slate-400"
+                                required
+                            />
+
+                        </div>
+
+                    </div>
+
+                    {/* Password */}
+                    <div className="mb-4">
+
+                        <label className="block text-slate-200 text-sm font-medium mb-2">
+                            Password
+                        </label>
+
+                        <div className="flex items-center bg-white/10 border border-white/20 rounded-2xl px-4 py-4 focus-within:border-cyan-400 transition">
+
+                            <FaLock className="text-slate-400 mr-3" />
+
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                name="password"
+                                placeholder="Enter your password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                className="w-full bg-transparent outline-none text-white placeholder-slate-400"
+                                required
+                            />
+
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="text-slate-400 hover:text-cyan-400"
+                            >
+
+                                {
+                                    showPassword
+                                        ? <FaEyeSlash />
+                                        : <FaEye />
+                                }
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    {/* Remember Me
+                    <div className="flex justify-between items-center mb-6">
+
+                        <label className="flex items-center gap-2 text-sm text-slate-300">
+
+                            <input
+                                type="checkbox"
+                                className="accent-cyan-500"
+                            />
+
+                            Remember Me
+
+                        </label>
+
+                        <Link
+                            to="/forgot-password"
+                            className="text-cyan-400 text-sm hover:text-cyan-300"
+                        >
+                            Forgot Password?
+                        </Link>
+
+                    </div> */}
+
+                    {/* Login Button */}
+                    <button
+                        type="submit"
+                        className="
+                        w-full
+                        bg-gradient-to-r
+                        from-cyan-500
+                        via-blue-500
+                        to-purple-600
+                        text-white
+                        py-4
+                        rounded-2xl
+                        font-bold
+                        flex
+                        items-center
+                        justify-center
+                        gap-3
+                        hover:scale-[1.02]
+                        hover:shadow-[0_0_30px_rgba(59,130,246,0.5)]
+                        transition-all
+                        duration-300
+                        "
+                    >
+
+                        <FaSignInAlt />
+
+                        Login
+
+                    </button>
+
+                    {/* Divider */}
+                    <div className="flex items-center my-6">
+
+                        <div className="flex-1 border-t border-white/20"></div>
+
+                        <span className="px-3 text-slate-400 text-sm">
+                            OR
+                        </span>
+
+                        <div className="flex-1 border-t border-white/20"></div>
+
+                    </div>
+
+                    {/* Register */}
+                    <p className="text-center text-slate-300">
+
+                        Don't have an account?
+
+                        <Link
+                            to="/register"
+                            className="ml-2 font-semibold text-cyan-400 hover:text-cyan-300"
+                        >
+                            Register
+                        </Link>
+
+                    </p>
+
+                </form>
+
+            </div>
 
         </div>
+
     );
+
 }
 
 export default Login;

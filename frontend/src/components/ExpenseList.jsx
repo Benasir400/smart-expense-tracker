@@ -146,12 +146,12 @@ function ExpenseList() {
 
     return (
 
-        <div className="p-5">
+        <div className="p-6">
 
             {/* Heading */}
             <div className="flex flex-col md:flex-row justify-between items-center mb-5 gap-4">
 
-                <h2 className="text-3xl font-bold">
+                <h2 className="text-3xl ">
 
                     Expense List
 
@@ -164,7 +164,7 @@ function ExpenseList() {
             </div>
 
             {/* Search */}
-            <div className="flex items-center border rounded p-3 mb-5 bg-white shadow">
+            <div className="flex items-center border rounded p-3 mb-5 bg-white/10 shadow">
 
                 <FaSearch
                     className="mr-3 text-gray-500"
@@ -187,7 +187,7 @@ function ExpenseList() {
             {/* Empty State */}
             {filteredExpenses.length === 0 ? (
 
-                <div className="bg-white shadow rounded p-10 text-center text-gray-500 text-lg">
+                <div className="bg-white/10 shadow rounded p-10 text-center text-gray-500 text-lg">
 
                     No expenses found
 

@@ -11,6 +11,10 @@ import {
 
 import { getExpenses } from "../services/expenseService";
 
+import {
+    FaChartPie
+} from "react-icons/fa";
+
 function ExpensePieChart() {
 
     const [expenses, setExpenses] = useState([]);
@@ -33,9 +37,7 @@ function ExpensePieChart() {
         }
     };
 
-    // Group expenses by category
-    const categoryData = [];
-
+    // Category Wise Data
     const grouped = {};
 
     expenses.forEach((expense) => {
@@ -50,6 +52,8 @@ function ExpensePieChart() {
         }
     });
 
+    const categoryData = [];
+
     for (let key in grouped) {
 
         categoryData.push({
@@ -59,23 +63,54 @@ function ExpensePieChart() {
     }
 
     const COLORS = [
-        "#0088FE",
-        "#00C49F",
-        "#FFBB28",
-        "#FF8042",
-        "#A020F0",
-        "#FF4560"
+        "#06B6D4",
+        "#3B82F6",
+        "#8B5CF6",
+        "#10B981",
+        "#F59E0B",
+        "#EF4444",
+        "#EC4899",
+        "#14B8A6"
     ];
 
     return (
 
-        <div className="bg-white p-5 rounded shadow m-5">
+        <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-6 rounded-3xl shadow-xl m-5">
 
-            <h2 className="text-2xl font-bold mb-5">
-                Expense Analytics
-            </h2>
+            {/* Header */}
 
-            <ResponsiveContainer width="100%" height={400}>
+            <div className="flex items-center gap-3 mb-6">
+
+                <div className="bg-gradient-to-r from-cyan-500 to-blue-600 p-3 rounded-xl">
+
+                    <FaChartPie className="text-white text-xl" />
+
+                </div>
+
+                <div>
+
+                    <h2 className="text-2xl font-bold text-white">
+
+                        Expense Analytics
+
+                    </h2>
+
+                    <p className="text-slate-300 text-sm">
+
+                        Category-wise spending distribution
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            {/* Pie Chart */}
+
+            <ResponsiveContainer
+                width="100%"
+                height={400}
+            >
 
                 <PieChart>
 
@@ -83,27 +118,38 @@ function ExpensePieChart() {
                         data={categoryData}
                         cx="50%"
                         cy="50%"
-                        outerRadius={120}
-                        fill="#8884d8"
+                        outerRadius={130}
+                        innerRadius={60}
                         dataKey="value"
                         label
                     >
 
-                        {categoryData.map((entry, index) => (
+                        {categoryData.map(
+                            (entry, index) => (
 
-                            <Cell
-                                key={`cell-${index}`}
-                                fill={
-                                    COLORS[
-                                        index % COLORS.length
-                                    ]
-                                }
-                            />
-                        ))}
+                                <Cell
+                                    key={index}
+                                    fill={
+                                        COLORS[
+                                        index %
+                                        COLORS.length
+                                        ]
+                                    }
+                                />
+
+                            )
+                        )}
 
                     </Pie>
 
-                    <Tooltip />
+                    <Tooltip
+                        contentStyle={{
+                            backgroundColor: "#0F172A",
+                            border: "1px solid #334155",
+                            borderRadius: "12px",
+                            color: "#fff"
+                        }}
+                    />
 
                     <Legend />
 

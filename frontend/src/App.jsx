@@ -36,7 +36,7 @@ function App() {
                 path="/add-expense"
                 element={<AddExpense />}
             />
-
+            
             <Route
                 path="/history"
                 element={<ExpenseHistory />}

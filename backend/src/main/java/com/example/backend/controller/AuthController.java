@@ -36,7 +36,12 @@ public class AuthController {
         if (existingUser.isPresent()) {
             return "Email already exists";
         }
-
+        if (request.getPhone() == null || request.getPhone().length() != 10) {
+    return "Phone number must be 10 digits";
+}
+if (!request.getEmail().contains("@")) {
+    return "Invalid Email";
+}
         User user = new User();
         user.setName(request.getName());
         user.setEmail(request.getEmail());
