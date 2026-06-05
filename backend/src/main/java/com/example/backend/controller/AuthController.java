@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import com.example.backend.dto.ForgotPasswordRequest;
+import com.example.backend.dto.VerifyOtpRequest;
+import com.example.backend.dto.ResetPasswordRequest;
+import com.example.backend.service.EmailService;
 
 @RestController
 @RequestMapping("/auth")
@@ -24,6 +28,8 @@ public class AuthController {
 
     @Autowired
     private JwtUtil jwtUtil;
+    @Autowired
+private EmailService emailService;
 
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
@@ -79,4 +85,88 @@ if (!request.getEmail().contains("@")) {
         response.put("message", "Invalid Credentials");
         return response;
     }
+    @PostMapping("/forgot-password")
+public String forgotPassword(
+        @RequestBody ForgotPasswordRequest request) {
+
+    Optional<User> user =
+            repository.findByEmail(
+                    request.getEmail());
+
+    if (user.isEmpty()) {
+        return "Email not found";
+    }
+
+    String otp =
+            String.valueOf(
+                    (int)(100000 + Math.random() * 900000)
+            );
+
+    user.get().setOtp(otp);
+
+    user.get().setOtpExpiryTime(
+            System.currentTimeMillis()
+                    + 5 * 60 * 1000
+    );
+
+    repository.save(user.get());
+
+    emailService.sendOtp(
+            request.getEmail(),
+            otp
+    );
+
+    return "OTP Sent Successfully";
+}
+@PostMapping("/verify-otp")
+public String verifyOtp(
+        @RequestBody VerifyOtpRequest request) {
+
+    Optional<User> user =
+            repository.findByEmail(
+                    request.getEmail());
+
+    if (user.isEmpty()) {
+        return "User Not Found";
+    }
+
+    if (!request.getOtp().equals(
+            user.get().getOtp())) {
+
+        return "Invalid OTP";
+    }
+
+    if (System.currentTimeMillis() >
+            user.get().getOtpExpiryTime()) {
+
+        return "OTP Expired";
+    }
+
+    return "OTP Verified";
+}
+@PostMapping("/reset-password")
+public String resetPassword(
+        @RequestBody ResetPasswordRequest request) {
+
+    Optional<User> user =
+            repository.findByEmail(
+                    request.getEmail());
+
+    if (user.isEmpty()) {
+        return "User Not Found";
+    }
+
+    user.get().setPassword(
+            encoder.encode(
+                    request.getNewPassword()
+            )
+    );
+
+    user.get().setOtp(null);
+    user.get().setOtpExpiryTime(null);
+
+    repository.save(user.get());
+
+    return "Password Reset Successfully";
+}
 }

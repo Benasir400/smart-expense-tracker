@@ -181,28 +181,17 @@ function Login() {
 
                     </div>
 
-                    {/* Remember Me
-                    <div className="flex justify-between items-center mb-6">
+                   {/* Forgot Password */}
+<div className="flex justify-end mb-6">
 
-                        <label className="flex items-center gap-2 text-sm text-slate-300">
+    <Link
+        to="/forgot-password"
+        className="text-cyan-400 text-sm hover:text-cyan-300 transition"
+    >
+        Forgot Password?
+    </Link>
 
-                            <input
-                                type="checkbox"
-                                className="accent-cyan-500"
-                            />
-
-                            Remember Me
-
-                        </label>
-
-                        <Link
-                            to="/forgot-password"
-                            className="text-cyan-400 text-sm hover:text-cyan-300"
-                        >
-                            Forgot Password?
-                        </Link>
-
-                    </div> */}
+</div>
 
                     {/* Login Button */}
                     <button

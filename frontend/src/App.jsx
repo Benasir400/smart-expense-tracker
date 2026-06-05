@@ -10,7 +10,9 @@ import AddExpense from "./pages/AddExpense";
 import ExpenseHistory from "./pages/ExpenseHistory";
 import Reports from "./pages/Reports";
 import Profile from "./pages/Profile";
-
+import ForgotPassword from "./pages/ForgotPassword";
+import VerifyOtp from "./pages/VerifyOtp";
+import ResetPassword from "./pages/ResetPassword";
 function App() {
 
     return (
@@ -45,6 +47,18 @@ function App() {
             <Route
                 path="/reports"
                 element={<Reports />}
+            />
+            <Route
+                path="/forgot-password"
+                element={<ForgotPassword />}
+            />
+            <Route
+                path="/verify-otp" 
+                element={<VerifyOtp/>} 
+            />
+            <Route
+                path="/reset-password"
+                element={<ResetPassword />}
             />
 
             <Route

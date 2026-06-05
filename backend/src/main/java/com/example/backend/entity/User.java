@@ -22,5 +22,8 @@ public class User {
 
     private String password;
 
-    private String phone;   // ✅ ADD THIS
+    private String phone; 
+    private String otp;
+
+    private Long otpExpiryTime;  // ✅ ADD THIS
 }
