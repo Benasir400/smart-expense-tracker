@@ -1,12 +1,14 @@
 package com.example.backend.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class SalaryRequest {
+@AllArgsConstructor
+public class MonthlyExpenseDTO {
 
-    private String email;
+    private String month;
     private Double amount;
 }

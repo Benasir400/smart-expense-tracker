@@ -1,45 +1,61 @@
 package com.example.backend.service;
 
-import com.example.backend.entity.UserSalary;
-import com.example.backend.repository.UserSalaryRepository;
+import com.example.backend.dto.SalaryRequest;
+import com.example.backend.entity.Salary;
+import com.example.backend.repository.SalaryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.YearMonth;
+import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
 public class SalaryService {
 
-    private final UserSalaryRepository repo;
+    private final SalaryRepository salaryRepository;
 
-    // SAVE SALARY (LOCK PER MONTH)
-    public UserSalary saveSalary(String userId, Double salary) {
+    public String saveSalary(SalaryRequest request) {
 
-        String monthYear = YearMonth.now().toString();
+        LocalDate today = LocalDate.now();
 
-        repo.findByUserIdAndMonthYear(userId, monthYear)
-                .ifPresent(s -> {
-                    throw new RuntimeException("Salary already locked for this month");
-                });
+        int month = today.getMonthValue();
+        int year = today.getYear();
 
-        UserSalary data = UserSalary.builder()
-                .userId(userId)
-                .monthYear(monthYear)
-                .salary(salary)
-                .createdAt(LocalDateTime.now())
+        boolean exists =
+                salaryRepository
+                        .findByEmailAndMonthAndYear(
+                                request.getEmail(),
+                                month,
+                                year
+                        )
+                        .isPresent();
+
+        if (exists) {
+            return "Salary already saved for this month";
+        }
+
+        Salary salary = Salary.builder()
+                .email(request.getEmail())
+                .amount(request.getAmount())
+                .month(month)
+                .year(year)
                 .build();
 
-        return repo.save(data);
+        salaryRepository.save(salary);
+
+        return "Salary Saved Successfully";
     }
 
-    // GET CURRENT MONTH SALARY
-    public UserSalary getSalary(String userId) {
+    public Salary getCurrentMonthSalary(String email) {
 
-        String monthYear = YearMonth.now().toString();
+        LocalDate today = LocalDate.now();
 
-        return repo.findByUserIdAndMonthYear(userId, monthYear)
+        return salaryRepository
+                .findByEmailAndMonthAndYear(
+                        email,
+                        today.getMonthValue(),
+                        today.getYear()
+                )
                 .orElse(null);
     }
 }

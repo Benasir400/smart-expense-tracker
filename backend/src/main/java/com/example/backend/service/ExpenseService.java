@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.backend.entity.Expense;
 import com.example.backend.repository.ExpenseRepository;
+import java.util.ArrayList;
+import com.example.backend.dto.MonthlyExpenseDTO;
 
 @Service
 public class ExpenseService {
@@ -73,4 +75,47 @@ public class ExpenseService {
 
         return repository.save(expense);
     }
+    public List<MonthlyExpenseDTO> getMonthlyExpenseChart(
+        String email) {
+
+    List<Object[]> results =
+            repository.getMonthlyExpenseChart(email);
+
+    String[] months = {
+            "",
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec"
+    };
+
+    List<MonthlyExpenseDTO> chartData =
+            new ArrayList<>();
+
+    for (Object[] row : results) {
+
+        Integer monthNumber =
+                (Integer) row[0];
+
+        Double totalAmount =
+                ((Number) row[1]).doubleValue();
+
+        chartData.add(
+                new MonthlyExpenseDTO(
+                        months[monthNumber],
+                        totalAmount
+                )
+        );
+    }
+
+    return chartData;
+}
 }

@@ -1,96 +1,215 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { getUserExpenses } from "../services/expenseService";
+import { saveSalary, getSalary } from "../services/salaryService";
 
-import { FaExclamationTriangle } from "react-icons/fa";
+import MonthlyExpenseChart
+from "../components/MonthlyExpenseChart";
+
+import {
+  getMonthlyChart
+}
+from "../services/chartService";
+
+import {
+    FaWallet,
+    FaArrowDown,
+    FaArrowUp,
+    FaPiggyBank,
+    FaExclamationTriangle,
+    FaLayerGroup,
+    FaReceipt
+} from "react-icons/fa";
 
 function Dashboard() {
 
     const [expenses, setExpenses] = useState([]);
+    const [salary, setSalary] = useState("");
+    const [salaryData, setSalaryData] = useState(null);
 
     const userName = localStorage.getItem("userName");
     const userEmail = localStorage.getItem("userEmail");
-
     // =======================
     // SALARY LOCK LOGIC
     // =======================
-    const currentMonthKey =
-        new Date().getFullYear() + "-" + new Date().getMonth();
 
-    const salaryData = JSON.parse(localStorage.getItem("salaryData"));
+   const currentMonth = new Date().getMonth()+1;
 
-    const isLocked =
-        salaryData && salaryData.monthKey === currentMonthKey;
+  const currentYear = new Date().getFullYear();
 
-    const [salary, setSalary] = useState(
-        isLocked ? salaryData.value : ""
-    );
+const isLocked =
+    salaryData &&
+    salaryData.month === currentMonth &&
+    salaryData.year === currentYear;
 
-    const displaySalary = isLocked ? salaryData.value : salary;
+    const displaySalary =
+      salaryData?.amount || 0;
 
     // =======================
     // FETCH EXPENSES
     // =======================
-    const fetchExpenses = async () => {
-        try {
-            const res = await getUserExpenses(userEmail);
-            setExpenses(res.data);
-        } catch (err) {
-            console.log(err);
-        }
-    };
+    const fetchSalary = async () => {
 
-    useEffect(() => {
-        fetchExpenses();
-    }, []);
+    try {
+
+        const response = await getSalary(userEmail);
+
+        console.log(response.data);
+
+        if (response.data) {
+            setSalaryData(response.data);
+        }
+
+    } catch (error) {
+
+        setSalaryData(null);
+
+    }
+};
+    const fetchExpenses = async () => {
+
+    try {
+
+        const response =
+            await getUserExpenses(userEmail);
+
+        setExpenses(response.data);
+
+    } catch (error) {
+
+        console.log(error);
+
+    }
+
+};
+   useEffect(() => {
+
+    fetchExpenses();
+    fetchSalary();
+
+}, []);
 
     // =======================
     // SAVE SALARY (LOCK MONTH)
     // =======================
-    const handleSaveSalary = () => {
+   const handleSaveSalary = async () => {
 
-        if (!salary) {
-            alert("Enter salary");
-            return;
-        }
+    if (!salary) {
 
-        const data = {
-            value: salary,
-            monthKey: currentMonthKey
-        };
+        alert("Enter Salary");
+        return;
 
-        localStorage.setItem("salaryData", JSON.stringify(data));
+    }
 
-        alert("Salary locked for this month");
-        window.location.reload();
-    };
+    try {
 
+        const response = await saveSalary({
+    email: userEmail,
+    amount: salary
+});
+
+alert(response.data);
+
+setSalary("");
+
+fetchSalary(); // important
+
+    } catch (error) {
+
+        alert("Failed to save salary");
+
+    }
+
+};
     // =======================
     // CALCULATIONS
     // =======================
     const totalExpense = expenses.reduce(
-        (sum, e) => sum + Number(e.amount),
-        0
-    );
+    (sum, item) => sum + Number(item.amount),
+    0
+);
 
-    const balance = Number(displaySalary || 0) - totalExpense;
+const balance =
+    Number(displaySalary) - totalExpense;
 
-    const percentage =
-        displaySalary > 0
-            ? Math.min((totalExpense / Number(displaySalary)) * 100, 100)
-            : 0;
+const percentage =
+    displaySalary > 0
+        ? Math.min(
+              (totalExpense / displaySalary) * 100,
+              100
+          )
+        : 0;
 
     const highestExpense =
-        expenses.length > 0
-            ? Math.max(...expenses.map(e => Number(e.amount)))
-            : 0;
+    expenses.length > 0
+        ? Math.max(
+              ...expenses.map(
+                  item => Number(item.amount)
+              )
+          )
+        : 0;
 
-    const greeting =
-        new Date().getHours() < 12
-            ? "Good Morning"
-            : new Date().getHours() < 18
-            ? "Good Afternoon"
-            : "Good Evening";
+   const transactionCount =
+    expenses.length;
+
+   const categoryCount = {};
+
+expenses.forEach((expense) => {
+
+    categoryCount[expense.category] =
+        (categoryCount[expense.category] || 0) + 1;
+
+});
+
+const topCategory =
+    Object.keys(categoryCount).length > 0
+        ? Object.keys(categoryCount).reduce(
+              (a, b) =>
+                  categoryCount[a] >
+                  categoryCount[b]
+                      ? a
+                      : b
+          )
+        : "N/A";
+        const hour =
+    new Date().getHours();
+
+const greeting =
+    hour < 12
+        ? "Good Morning"
+        : hour < 18
+        ? "Good Afternoon"
+        : "Good Evening";
+        const [chartData, setChartData] =
+        useState([]);
+        useEffect(() => {
+
+    loadChart();
+
+}, []);
+
+const loadChart = async () => {
+
+    try {
+
+        const email =
+            localStorage.getItem(
+                "email"
+            );
+
+        const data =
+            await getMonthlyChart(
+                email
+            );
+
+        setChartData(data);
+
+    } catch (error) {
+
+        console.log(error);
+
+    }
+};
 
     // =======================
     // UI
@@ -111,133 +230,169 @@ function Dashboard() {
                         {greeting}, {userName}
                     </h2>
                 </div>
+<div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-6 rounded-2xl mb-6">
 
+    <h2 className="text-xl font-bold">
+        Financial Health
+    </h2>
+
+    <p>
+        {balance >= 0
+            ? "You are managing your expenses well."
+            : "Your spending exceeded your budget."
+        }
+    </p>
+
+</div>
                 {/* ================= SALARY SECTION ================= */}
-                <div className="bg-white/10 p-6 rounded-2xl mb-8">
+               <div className="bg-white/10 p-6 rounded-2xl mb-8">
 
-                    <h2 className="text-2xl font-bold text-white mb-4">
-                        Monthly Salary / Budget
-                    </h2>
+    <h2 className="text-2xl font-bold text-white mb-4">
+        Monthly Salary / Budget
+    </h2>
 
-                    {/* WARNING */}
-                    {!isLocked && (
-                        <div className="bg-yellow-100 text-yellow-800 p-3 rounded mb-4">
-                            ⚠️ Salary can be set only once per month
-                        </div>
-                    )}
+    {!isLocked ? (
 
-                    {/* FINANCIAL HEALTH */}
-                    <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-5 rounded-xl mb-6">
-                        <h2 className="font-bold">Financial Health</h2>
-                        <p>
-                            {balance >= 0
-                                ? "You are managing well 👍"
-                                : "Overspending detected ⚠️"}
-                        </p>
-                    </div>
+        <div className="flex gap-4">
 
-                    {/* PROGRESS BAR */}
-                    <div className="mb-6">
-                        <div className="flex justify-between text-white mb-2">
-                            <span>Budget Usage</span>
-                            <span>{percentage.toFixed(0)}%</span>
-                        </div>
+            <input
+                type="number"
+                value={salary}
+                onChange={(e) => setSalary(e.target.value)}
+                placeholder="Enter Salary"
+                className="w-full p-3 rounded bg-white/10 text-white border border-white/20"
+            />
 
-                        <div className="w-full bg-gray-300 h-3 rounded-full">
-                            <div
-                                className={`h-3 rounded-full ${
-                                    percentage < 50
-                                        ? "bg-green-500"
-                                        : percentage < 80
-                                        ? "bg-yellow-500"
-                                        : "bg-red-500"
-                                }`}
-                                style={{ width: `${percentage}%` }}
-                            />
-                        </div>
-                    </div>
+            <button
+                onClick={handleSaveSalary}
+                className="bg-cyan-500 hover:bg-cyan-600 px-6 py-3 text-white rounded"
+            >
+                Save Salary
+            </button>
 
-                    {/* INPUT / DISPLAY */}
-                    {!isLocked ? (
-                        <div className="flex gap-4">
+        </div>
 
-                            <input
-                                type="number"
-                                value={salary}
-                                onChange={(e) => setSalary(e.target.value)}
-                                placeholder="Enter Salary"
-                                className="w-full p-3 rounded bg-white/10 text-white"
-                            />
+    ) : (
 
-                            <button
-                                onClick={handleSaveSalary}
-                                className="bg-cyan-500 px-6 py-3 text-white rounded"
-                            >
-                                Save
-                            </button>
+        <div className="flex justify-between items-center bg-white/5 p-5 rounded-xl">
 
-                        </div>
-                    ) : (
-                        <div className="flex justify-between items-center bg-white/5 p-4 rounded">
+            <div>
 
-                            <div>
-                                <p className="text-gray-400">Monthly Salary</p>
-                                <h2 className="text-3xl text-cyan-400">
-                                    ₹ {displaySalary}
-                                </h2>
-                                <p className="text-green-400">🔒 Locked</p>
-                            </div>
+                <p className="text-gray-400">
+                    Monthly Salary
+                </p>
 
-                            <button
-                                onClick={() => {
-                                    localStorage.removeItem("salaryData");
-                                    window.location.reload();
-                                }}
-                                className="bg-red-500 px-4 py-2 text-white rounded"
-                            >
-                                Reset
-                            </button>
+                <h2 className="text-4xl text-cyan-400">
+                    ₹ {displaySalary}
+                </h2>
 
-                        </div>
-                    )}
+                <p className="text-green-400">
+                    🔒 Locked For This Month
+                </p>
 
-                </div>
+            </div>
 
-                {/* WARNING */}
-                {totalExpense > displaySalary && (
-                    <div className="bg-red-500 text-white p-4 rounded mb-6 flex gap-3 items-center">
-                        <FaExclamationTriangle size={24} />
-                        <div>
-                            <h2 className="font-bold">Budget Exceeded</h2>
-                            <p>You crossed your monthly limit</p>
-                        </div>
-                    </div>
-                )}
+            <button
+                disabled
+                className="bg-gray-500 px-5 py-3 rounded text-white"
+            >
+                Locked
+            </button>
 
+        </div>
+
+    )}
+
+</div>
+{totalExpense > displaySalary && displaySalary > 0 && (
+
+    <div className="bg-red-500 text-white p-4 rounded-xl mb-6 flex items-center gap-3">
+
+        <FaExclamationTriangle size={24} />
+
+        <div>
+
+            <h2 className="font-bold">
+                Budget Exceeded
+            </h2>
+
+            <p>
+                You crossed your monthly salary limit.
+            </p>
+
+        </div>
+
+    </div>
+
+)}
+<div className="bg-white/10 p-5 rounded-2xl mb-8">
+
+    <div className="flex justify-between text-white mb-2">
+
+        <span>Budget Used</span>
+
+        <span>{percentage.toFixed(0)}%</span>
+
+    </div>
+
+    <div className="w-full bg-slate-700 rounded-full h-4">
+
+        <div
+            className={`h-4 rounded-full ${
+    percentage >= 90
+        ? "bg-red-500"
+        : percentage >= 70
+        ? "bg-yellow-500"
+        : "bg-green-500"
+}`}
+            style={{
+                width: `${percentage}%`
+            }}
+        ></div>
+
+    </div>
+
+</div>
                 {/* CARDS */}
-                <div className="grid grid-cols-4 gap-6 mb-10 text-white">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
-                    <div className="bg-white/10 p-5 rounded">
+                    <div className="bg-white/10 backdrop-blur-lg p-6 rounded-2xl border border-white/10 shadow-lg text-white">
                         <p>Budget</p>
                         <h2 className="text-2xl">₹ {displaySalary}</h2>
                     </div>
 
-                    <div className="bg-white/10 p-5 rounded">
+                    <div className="bg-white/10 backdrop-blur-lg p-6 rounded-2xl border border-white/10 shadow-lg text-white">
                         <p>Expense</p>
                         <h2 className="text-2xl">₹ {totalExpense}</h2>
                     </div>
 
-                    <div className="bg-white/10 p-5 rounded">
+                    <div className="bg-white/10 backdrop-blur-lg p-6 rounded-2xl border border-white/10 shadow-lg text-white">
                         <p>Balance</p>
                         <h2 className="text-2xl">₹ {balance}</h2>
                     </div>
 
-                    <div className="bg-white/10 p-5 rounded">
+                    <div className="bg-white/10 backdrop-blur-lg p-6 rounded-2xl border border-white/10 shadow-lg text-white">
                         <p>Highest</p>
                         <h2 className="text-2xl">₹ {highestExpense}</h2>
                     </div>
+                    <div className="bg-white/10 backdrop-blur-lg p-6 rounded-2xl border border-white/10 shadow-lg text-white">
+    <p>Transactions</p>
+    <h2 className="text-2xl">
+        {transactionCount}
+    </h2>
+</div>
+
+<div className="bg-white/10 backdrop-blur-lg p-6 rounded-2xl border border-white/10 shadow-lg text-white">
+    <p>Top Category</p>
+    <h2 className="text-2xl">
+        {topCategory}
+    </h2>
+</div>
 
                 </div>
+                <MonthlyExpenseChart
+    data={chartData}
+/>
 
                 {/* EXPENSE TABLE */}
                 <div className="bg-white/10 p-6 rounded text-white">
@@ -247,24 +402,40 @@ function Dashboard() {
                     {expenses.length === 0 ? (
                         <p>No expenses found</p>
                     ) : (
-                        <table className="w-full">
-                            <thead>
+                        <table className="w-full text-left">
+                            <thead className="border-b border-white/20 text-cyan-400">
                                 <tr>
                                     <th>Title</th>
                                     <th>Amount</th>
                                     <th>Category</th>
+                                    <th>Date</th>
                                 </tr>
                             </thead>
 
                             <tbody>
-                                {expenses.map((e) => (
-                                    <tr key={e.id}>
-                                        <td>{e.title}</td>
-                                        <td>₹ {e.amount}</td>
-                                        <td>{e.category}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
+    {expenses.map((e) => (
+        <tr
+            key={e.id}
+            className="border-b border-white/10 hover:bg-white/5"
+        >
+            <td className="py-3">
+                {e.title}
+            </td>
+
+            <td className="py-3 text-red-400 font-semibold">
+                ₹ {e.amount}
+            </td>
+
+            <td className="py-3">
+                {e.category}
+            </td>
+
+            <td className="py-3">
+                {e.date}
+            </td>
+        </tr>
+    ))}
+</tbody>
                         </table>
                     )}
 

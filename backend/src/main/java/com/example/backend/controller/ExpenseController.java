@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.backend.entity.Expense;
 import com.example.backend.service.ExpenseService;
+import com.example.backend.dto.MonthlyExpenseDTO;
 
 @RestController
 @RequestMapping("/expenses")
@@ -62,4 +63,12 @@ public class ExpenseController {
                 expense
         );
     }
+    @GetMapping("/monthly-chart/{email}")
+public List<MonthlyExpenseDTO> getMonthlyChart(
+        @PathVariable String email) {
+
+    return service.getMonthlyExpenseChart(
+            email
+    );
+}
 }

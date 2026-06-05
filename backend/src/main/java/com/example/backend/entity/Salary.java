@@ -3,25 +3,24 @@ package com.example.backend.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Entity
+@Table(name = "salary")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserSalary {
+public class Salary {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String userId;     // email
+    private String email;
 
-    private String monthYear;  // e.g. 2026-06
+    private Double amount;
 
-    private Double salary;
+    private int month;
 
-    private LocalDateTime createdAt;
+    private int year;
 }
