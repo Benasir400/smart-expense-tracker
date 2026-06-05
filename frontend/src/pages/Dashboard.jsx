@@ -180,37 +180,27 @@ const greeting =
         : hour < 18
         ? "Good Afternoon"
         : "Good Evening";
-        const [chartData, setChartData] =
-        useState([]);
-        useEffect(() => {
 
-    loadChart();
 
-}, []);
+const [chartData, setChartData] = useState([]);
 
 const loadChart = async () => {
+  try {
+    const email = localStorage.getItem("userEmail");
 
-    try {
+    const response = await getMonthlyChart(email);
 
-        const email =
-            localStorage.getItem(
-                "email"
-            );
+    console.log("CHART API RESPONSE:", response.data); // DEBUG
 
-        const data =
-            await getMonthlyChart(
-                email
-            );
-
-        setChartData(data);
-
-    } catch (error) {
-
-        console.log(error);
-
-    }
+    setChartData(response.data || []);  // FIX
+  } catch (error) {
+    console.log(error);
+  }
 };
 
+useEffect(() => {
+  loadChart();
+}, []); // MUST be empty dependency array
     // =======================
     // UI
     // =======================

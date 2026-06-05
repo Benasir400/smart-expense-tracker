@@ -28,37 +28,42 @@ function AddExpense() {
     };
 
     const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        e.preventDefault();
+    try {
+        const userEmail = localStorage.getItem("userEmail");
 
-        try {
-
-            const userEmail =
-                localStorage.getItem("userEmail");
-
-            const expenseData = {
-                ...expense,
-                userEmail
-            };
-
-            await addExpense(expenseData);
-
-            alert("Expense Added Successfully");
-
-            setExpense({
-                title: "",
-                amount: "",
-                category: "",
-                date: ""
-            });
-
-        } catch (error) {
-
-            console.log(error);
-
-            alert("Error Adding Expense");
+        if (!userEmail) {
+            alert("User not logged in");
+            return;
         }
-    };
+
+        const expenseData = {
+            title: expense.title,
+            amount: Number(expense.amount),   // FIX 1
+            category: expense.category,
+            date: expense.date || null,       // FIX 2
+            userEmail: userEmail
+        };
+
+        console.log("Sending Expense:", expenseData); // DEBUG
+
+        await addExpense(expenseData);
+
+        alert("Expense Added Successfully");
+
+        setExpense({
+            title: "",
+            amount: "",
+            category: "",
+            date: ""
+        });
+
+    } catch (error) {
+        console.log("ERROR:", error?.response?.data || error.message);
+        alert("Error Adding Expense");
+    }
+};
 
     return (
 
@@ -143,14 +148,13 @@ function AddExpense() {
                                 <div className="bg-white/10 border border-white/20 rounded-xl p-4">
 
                                     <input
-                                        type="number"
-                                        name="amount"
-                                        placeholder="Enter Amount"
-                                        value={expense.amount}
-                                        onChange={handleChange}
-                                        className="w-full bg-transparent outline-none text-white placeholder-slate-400"
-                                        required
-                                    />
+    type="number"
+    name="amount"
+    value={expense.amount}
+    onChange={handleChange}
+    className="w-full bg-transparent outline-none text-white"
+    required
+/>
 
                                 </div>
 
@@ -232,14 +236,15 @@ function AddExpense() {
 
                                 <div className="bg-white/10 border border-white/20 rounded-xl p-4">
 
-                                    <input
-                                        type="date"
-                                        name="date"
-                                        value={expense.date}
-                                        onChange={handleChange}
-                                        className="w-full bg-transparent outline-none text-white"
-                                        required
-                                    />
+                                   <input
+    type="date"
+    name="date"
+    value={expense.date}
+    onChange={handleChange}
+    required
+    className="w-full bg-transparent outline-none text-white"
+    
+/>
 
                                 </div>
 

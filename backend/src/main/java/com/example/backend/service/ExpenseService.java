@@ -19,7 +19,7 @@ public class ExpenseService {
     // Save Expense
     public Expense saveExpense(
             Expense expense) {
-
+        
         return repository.save(expense);
     }
 
@@ -75,11 +75,11 @@ public class ExpenseService {
 
         return repository.save(expense);
     }
-    public List<MonthlyExpenseDTO> getMonthlyExpenseChart(
-        String email) {
+    public List<MonthlyExpenseDTO> getMonthlyExpenseChart(String email) {
 
     List<Object[]> results =
             repository.getMonthlyExpenseChart(email);
+            System.out.println("RAW DB RESULT: " + results);
 
     String[] months = {
             "",
@@ -100,20 +100,30 @@ public class ExpenseService {
     List<MonthlyExpenseDTO> chartData =
             new ArrayList<>();
 
+    // ✅ FIX 1: handle empty response safely
+    if (results == null || results.isEmpty()) {
+        return chartData;
+    }
+
     for (Object[] row : results) {
 
+        // ✅ FIX 2: safe casting (IMPORTANT)
         Integer monthNumber =
-                (Integer) row[0];
+                ((Number) row[0]).intValue();
 
         Double totalAmount =
                 ((Number) row[1]).doubleValue();
 
-        chartData.add(
-                new MonthlyExpenseDTO(
-                        months[monthNumber],
-                        totalAmount
-                )
-        );
+        // ✅ FIX 3: prevent invalid month crash
+        if (monthNumber >= 1 && monthNumber <= 12) {
+
+            chartData.add(
+                    new MonthlyExpenseDTO(
+                            months[monthNumber],
+                            totalAmount
+                    )
+            );
+        }
     }
 
     return chartData;
