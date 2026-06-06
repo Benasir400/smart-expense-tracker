@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/expenses";
+const API_URL = "https://smart-expense-tracker-api-v898.onrender.com/expenses";
 
 export const getMonthlyChart = async (email) => {
     return await axios.get(

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API_URL =
-    "http://localhost:8080/expenses";
+    "https://smart-expense-tracker-api-v898.onrender.com/expenses";
 
 // Get All Expenses
 export const getExpenses =
