@@ -35,43 +35,67 @@ function SalarySection() {
     };
 
     return (
-        <div className="bg-white/10 p-6 rounded-2xl">
+        <div className="bg-white/10 p-4 sm:p-6 rounded-xl sm:rounded-2xl w-full">
 
-            <h2 className="text-xl font-bold text-white mb-4">
+            {/* Title */}
+            <h2 className="text-lg sm:text-xl font-bold text-white mb-4">
                 Monthly Salary
             </h2>
 
+            {/* Not Locked */}
             {!isLocked ? (
-                <div className="flex gap-4">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
 
                     <input
                         type="number"
                         value={salary}
                         onChange={(e) => setSalary(e.target.value)}
                         placeholder="Enter salary"
-                        className="p-3 rounded bg-white/10 text-white w-full"
+                        className="
+                            p-3
+                            rounded-lg
+                            bg-white/10
+                            text-white
+                            w-full
+                            outline-none
+                            border border-white/20
+                            text-sm sm:text-base
+                        "
                     />
 
                     <button
                         onClick={handleSave}
-                        className="bg-blue-500 px-6 py-3 text-white rounded"
+                        className="
+                            bg-blue-500
+                            hover:bg-blue-600
+                            px-4 sm:px-6
+                            py-3
+                            text-white
+                            rounded-lg
+                            w-full sm:w-auto
+                            transition
+                            text-sm sm:text-base
+                        "
                     >
                         Save
                     </button>
 
                 </div>
             ) : (
-                <div className="text-white">
 
-                    <h1 className="text-3xl font-bold">
+                /* Locked */
+                <div className="text-white text-center sm:text-left">
+
+                    <h1 className="text-2xl sm:text-3xl font-bold">
                         ₹ {savedSalary.salary}
                     </h1>
 
-                    <p className="text-green-400 mt-2">
+                    <p className="text-green-400 mt-2 text-sm sm:text-base">
                         🔒 Locked for this month
                     </p>
 
                 </div>
+
             )}
 
         </div>

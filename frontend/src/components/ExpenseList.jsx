@@ -17,241 +17,169 @@ import ExportPDF from "./ExportPDF";
 
 function ExpenseList() {
 
-    // States
-    const [expenses, setExpenses] =
-        useState([]);
+    const [expenses, setExpenses] = useState([]);
+    const [search, setSearch] = useState("");
+    const [editingId, setEditingId] = useState(null);
 
-    const [search, setSearch] =
-        useState("");
+    const [editedExpense, setEditedExpense] = useState({
+        title: "",
+        amount: "",
+        category: "",
+        date: "",
+        userEmail: ""
+    });
 
-    const [editingId, setEditingId] =
-        useState(null);
-
-    const [editedExpense, setEditedExpense] =
-        useState({
-            title: "",
-            amount: "",
-            category: "",
-            date: "",
-            userEmail: ""
-        });
-
-    // Fetch User Expenses
     const fetchExpenses = async () => {
-
         try {
-
-            const email =
-                localStorage.getItem(
-                    "userEmail"
-                );
-
-            const response =
-                await getUserExpenses(
-                    email
-                );
-
-            setExpenses(
-                response.data
-            );
-
+            const email = localStorage.getItem("userEmail");
+            const response = await getUserExpenses(email);
+            setExpenses(response.data);
         } catch (error) {
-
             console.log(error);
         }
     };
 
-    // useEffect
     useEffect(() => {
-
         fetchExpenses();
-
     }, []);
 
-    // Delete Expense
     const handleDelete = async (id) => {
-
         try {
-
             await deleteExpense(id);
-
-            alert(
-                "Expense Deleted Successfully"
-            );
-
+            alert("Expense Deleted Successfully");
             fetchExpenses();
-
         } catch (error) {
-
             console.log(error);
         }
     };
 
-    // Edit Expense
     const handleEdit = (expense) => {
-
         setEditingId(expense.id);
-
-        setEditedExpense({
-            title: expense.title,
-            amount: expense.amount,
-            category: expense.category,
-            date: expense.date,
-            userEmail: expense.userEmail
-        });
+        setEditedExpense(expense);
     };
 
-    // Update Expense
     const handleUpdate = async (id) => {
-
         try {
-
-            await updateExpense(
-                id,
-                editedExpense
-            );
-
-            alert(
-                "Expense Updated Successfully"
-            );
-
+            await updateExpense(id, editedExpense);
+            alert("Expense Updated Successfully");
             setEditingId(null);
-
             fetchExpenses();
-
         } catch (error) {
-
             console.log(error);
         }
     };
 
-    // Search Filter
-    const filteredExpenses =
-        expenses.filter((expense) =>
-
-            expense.title
-                .toLowerCase()
-                .includes(
-                    search.toLowerCase()
-                )
-
-            ||
-
-            expense.category
-                .toLowerCase()
-                .includes(
-                    search.toLowerCase()
-                )
-        );
+    const filteredExpenses = expenses.filter((expense) =>
+        expense.title.toLowerCase().includes(search.toLowerCase()) ||
+        expense.category.toLowerCase().includes(search.toLowerCase())
+    );
 
     return (
+        <div className="p-3 md:p-6">
 
-        <div className="p-6">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-5">
 
-            {/* Heading */}
-            <div className="flex flex-col md:flex-row justify-between items-center mb-5 gap-4">
-
-                <h2 className="text-3xl ">
-
+                <h2 className="text-xl md:text-3xl text-white">
                     Expense List
-
                 </h2>
 
-                <ExportPDF
-                    expenses={filteredExpenses}
-                />
+                <ExportPDF expenses={filteredExpenses} />
 
             </div>
 
             {/* Search */}
-            <div className="flex items-center border rounded p-3 mb-5 bg-white/10 shadow">
+            <div className="flex items-center border border-white/20 rounded-xl p-3 mb-5 bg-white/10">
 
-                <FaSearch
-                    className="mr-3 text-gray-500"
-                />
+                <FaSearch className="mr-3 text-gray-400" />
 
                 <input
                     type="text"
                     placeholder="Search by title or category..."
                     value={search}
-                    onChange={(e) =>
-                        setSearch(
-                            e.target.value
-                        )
-                    }
-                    className="outline-none w-full"
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="outline-none w-full bg-transparent text-white placeholder-gray-400"
                 />
 
             </div>
 
             {/* Empty State */}
             {filteredExpenses.length === 0 ? (
-
-                <div className="bg-white/10 shadow rounded p-10 text-center text-gray-500 text-lg">
-
+                <div className="bg-white/10 rounded-xl p-10 text-center text-gray-400 text-sm md:text-lg">
                     No expenses found
+                </div>
+            ) : (
+
+                <div className="overflow-x-auto">
+
+                    <table className="w-full min-w-[700px] border-collapse rounded-xl overflow-hidden">
+
+                        <thead>
+                            <tr className="bg-slate-700 text-white text-sm md:text-base">
+                                <th className="px-3 md:px-4 py-3">Title</th>
+                                <th className="px-3 md:px-4 py-3">Amount</th>
+                                <th className="px-3 md:px-4 py-3">Category</th>
+                                <th className="px-3 md:px-4 py-3">Date</th>
+                                <th className="px-3 md:px-4 py-3">Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {filteredExpenses.map((expense) => (
+                                <tr
+                                    key={expense.id}
+                                    className="bg-slate-800 text-gray-100 hover:bg-slate-700 transition"
+                                >
+
+                                    <td className="px-3 md:px-4 py-3 border border-slate-600">
+                                        {expense.title}
+                                    </td>
+
+                                    <td className="px-3 md:px-4 py-3 border border-slate-600 text-red-400 font-semibold">
+                                        ₹ {expense.amount}
+                                    </td>
+
+                                    <td className="px-3 md:px-4 py-3 border border-slate-600">
+                                        {expense.category}
+                                    </td>
+
+                                    <td className="px-3 md:px-4 py-3 border border-slate-600">
+                                        {expense.date}
+                                    </td>
+
+                                    <td className="px-3 md:px-4 py-3 border border-slate-600">
+
+                                        {/* Mobile stack buttons */}
+                                        <div className="flex flex-col md:flex-row gap-2 justify-center">
+
+                                            <button
+                                                className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-3 py-2 rounded-lg flex items-center gap-2 text-sm"
+                                            >
+                                                <FaEdit />
+                                                Edit
+                                            </button>
+
+                                            <button
+                                                onClick={() => handleDelete(expense.id)}
+                                                className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg flex items-center gap-2 text-sm"
+                                            >
+                                                <FaTrash />
+                                                Delete
+                                            </button>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+                            ))}
+
+                        </tbody>
+
+                    </table>
 
                 </div>
-
-            ) : (
-<table className="w-full border-collapse overflow-hidden rounded-xl">
-
-    <thead>
-         <tr className="bg-slate-700 text-white">
-            <th className="px-4 py-4 font-semibold">Title</th>
-            <th className="px-4 py-4 font-semibold">Amount</th>
-            <th className="px-4 py-4 font-semibold">Category</th>
-            <th className="px-4 py-4 font-semibold">Date</th>
-            <th className="px-4 py-4 font-semibold">Actions</th>
-        </tr>
-    </thead>
-
-    <tbody>
-        {filteredExpenses.map((expense) => (
-            <tr
-                key={expense.id}
-                className="bg-slate-800 text-gray-100 hover:bg-slate-700 transition-all duration-200"
-            >
-                <td className="border border-slate-600 px-4 py-4">
-                    {expense.title}
-                </td>
-
-                <td className="border border-slate-600 px-4 py-4 text-red-400 font-semibold">
-                    ₹ {expense.amount}
-                </td>
-
-                <td className="border border-slate-600 px-4 py-4">
-                    {expense.category}
-                </td>
-
-                <td className="border border-slate-600 px-4 py-4">
-                    {expense.date}
-                </td>
-
-                <td className="border border-slate-600 px-4 py-4">
-                    <div className="flex justify-center gap-2">
-
-                        <button
-                            className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-6 py-3 rounded-xl flex items-center gap-2 hover:scale-105 transition"
-                        >
-                            <FaEdit />
-                            Edit
-                        </button>
-
-                        <button
-                            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md flex items-center gap-2"
-                        >
-                            <FaTrash />
-                            Delete
-                        </button>
-
-                    </div>
-                </td>
-            </tr>
-        ))}
-    </tbody>
-
-</table>
 
             )}
 

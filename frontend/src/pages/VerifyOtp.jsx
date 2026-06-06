@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
+
 import {
     FaKey,
     FaCheckCircle,
@@ -12,7 +13,6 @@ function VerifyOtp() {
     const [otp, setOtp] = useState("");
     const [loading, setLoading] = useState(false);
 
-    // ⏱ timer state
     const [timer, setTimer] = useState(60);
     const [canResend, setCanResend] = useState(false);
 
@@ -21,9 +21,7 @@ function VerifyOtp() {
 
     const email = location.state?.email;
 
-    // 🔥 countdown timer logic
     useEffect(() => {
-
         if (timer === 0) {
             setCanResend(true);
             return;
@@ -37,13 +35,10 @@ function VerifyOtp() {
 
     }, [timer]);
 
-    // verify OTP
     const handleSubmit = async (e) => {
-
         e.preventDefault();
 
         try {
-
             setLoading(true);
 
             await axios.post("http://localhost:8080/auth/verify-otp", {
@@ -62,18 +57,14 @@ function VerifyOtp() {
         }
     };
 
-    // 🔁 resend OTP
     const handleResend = async () => {
-
         try {
-
             await axios.post("http://localhost:8080/auth/forgot-password", {
                 email
             });
 
             alert("OTP Resent Successfully");
 
-            // reset timer
             setTimer(60);
             setCanResend(false);
 
@@ -83,59 +74,104 @@ function VerifyOtp() {
     };
 
     return (
-
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 px-4">
 
-            <div className="w-full max-w-md">
+            {/* Card wrapper */}
+            <div className="w-full flex justify-center">
 
                 <form
                     onSubmit={handleSubmit}
-                    className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-[32px] shadow-[0_20px_80px_rgba(0,0,0,0.4)] p-8"
+                    className="
+                        w-full
+                        max-w-sm
+                        sm:max-w-md
+                        md:max-w-lg
+                        backdrop-blur-xl
+                        bg-white/10
+                        border border-white/20
+                        rounded-[24px]
+                        sm:rounded-[32px]
+                        shadow-[0_20px_80px_rgba(0,0,0,0.4)]
+                        p-5
+                        sm:p-8
+                    "
                 >
 
                     {/* Icon */}
                     <div className="flex justify-center mb-5">
-                        <div className="bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 p-5 rounded-3xl shadow-lg">
-                            <FaKey className="text-white text-4xl" />
+                        <div className="bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 p-4 sm:p-5 rounded-2xl sm:rounded-3xl shadow-lg">
+                            <FaKey className="text-white text-3xl sm:text-4xl" />
                         </div>
                     </div>
 
                     {/* Title */}
-                    <h2 className="text-center text-white text-3xl font-bold mb-2">
+                    <h2 className="text-center text-white text-2xl sm:text-3xl font-bold mb-2">
                         Verify OTP
                     </h2>
 
-                    <p className="text-center text-slate-300 mb-1">
+                    <p className="text-center text-slate-300 text-sm sm:text-base mb-1">
                         OTP sent to
                     </p>
 
-                    <p className="text-center text-cyan-400 mb-6 font-semibold">
+                    <p className="text-center text-cyan-400 mb-6 font-semibold text-sm sm:text-base break-all">
                         {email}
                     </p>
 
-                    {/* OTP input */}
+                    {/* OTP Input */}
                     <input
                         type="text"
                         maxLength={6}
                         placeholder="Enter OTP"
                         value={otp}
                         onChange={(e) => setOtp(e.target.value)}
-                        className="w-full mb-6 px-4 py-4 rounded-2xl bg-white/10 border border-white/20 text-white text-center tracking-widest text-lg outline-none"
+                        className="
+                            w-full
+                            mb-6
+                            px-3 sm:px-4
+                            py-3 sm:py-4
+                            rounded-xl sm:rounded-2xl
+                            bg-white/10
+                            border border-white/20
+                            text-white
+                            text-center
+                            tracking-widest
+                            text-base sm:text-lg
+                            outline-none
+                        "
                         required
                     />
 
-                    {/* Verify button */}
+                    {/* Button */}
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 disabled:opacity-50"
+                        className="
+                            w-full
+                            bg-gradient-to-r
+                            from-cyan-500
+                            via-blue-500
+                            to-purple-600
+                            text-white
+                            py-3 sm:py-4
+                            rounded-xl sm:rounded-2xl
+                            font-bold
+                            flex
+                            items-center
+                            justify-center
+                            gap-2
+                            hover:scale-[1.02]
+                            transition-all
+                            duration-300
+                            disabled:opacity-50
+                            text-sm sm:text-base
+                        "
                     >
                         <FaCheckCircle />
                         {loading ? "Verifying..." : "Verify OTP"}
                     </button>
 
-                    {/* Timer + Resend */}
-                    <div className="text-center mt-6 text-slate-300">
+                    {/* Timer / Resend */}
+                    <div className="text-center mt-6 text-slate-300 text-sm sm:text-base">
 
                         {canResend ? (
                             <button

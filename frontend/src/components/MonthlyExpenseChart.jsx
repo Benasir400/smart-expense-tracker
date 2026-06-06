@@ -9,46 +9,57 @@ import {
 } from "recharts";
 
 function MonthlyExpenseChart({ data }) {
-  console.log("Chart Data:", data); // DEBUG
+
+  console.log("Chart Data:", data);
 
   return (
-    <div className="bg-white/10 p-6 rounded-xl shadow-lg mt-6">
+    <div className="bg-white/10 p-4 sm:p-6 rounded-xl shadow-lg mt-6 w-full">
 
-      <h2 className="text-xl font-bold mb-4 text-white">
+      {/* Title */}
+      <h2 className="text-lg sm:text-xl font-bold mb-4 text-white">
         Monthly Expense Trend
       </h2>
 
-      <ResponsiveContainer width="100%" height={300}>
+      {/* Chart Wrapper */}
+      <div className="w-full overflow-x-auto">
 
-        <LineChart data={data?.length ? data : []}>
+        <ResponsiveContainer width="100%" height={280}>
 
-          <CartesianGrid strokeDasharray="3 3" />
+          <LineChart data={data?.length ? data : []}>
 
-          {/* X Axis */}
-          <XAxis
-            dataKey="month"
-            stroke="#ffffff"
-          />
+            <CartesianGrid strokeDasharray="3 3" />
 
-          {/* Y Axis */}
-          <YAxis stroke="#ffffff" />
+            {/* X Axis */}
+            <XAxis
+              dataKey="month"
+              stroke="#ffffff"
+              tick={{ fontSize: 12 }}
+            />
 
-          {/* Tooltip */}
-          <Tooltip />
+            {/* Y Axis */}
+            <YAxis
+              stroke="#ffffff"
+              tick={{ fontSize: 12 }}
+            />
 
-          {/* Line Chart */}
-          <Line
-            type="monotone"
-            dataKey="amount"   // IMPORTANT: must match backend key
-            stroke="#a855f7"
-            strokeWidth={3}
-            dot={{ r: 4 }}
-            activeDot={{ r: 6 }}
-          />
+            {/* Tooltip */}
+            <Tooltip />
 
-        </LineChart>
+            {/* Line */}
+            <Line
+              type="monotone"
+              dataKey="amount"
+              stroke="#a855f7"
+              strokeWidth={3}
+              dot={{ r: 3 }}
+              activeDot={{ r: 5 }}
+            />
 
-      </ResponsiveContainer>
+          </LineChart>
+
+        </ResponsiveContainer>
+
+      </div>
 
     </div>
   );
