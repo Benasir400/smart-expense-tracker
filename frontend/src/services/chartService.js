@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://smart-expense-tracker-api-v898.onrender.com/expenses";
+const API_URL =  import.meta.env.VITE_API_URL + "/expenses";
 
 export const getMonthlyChart = async (email) => {
     return await axios.get(

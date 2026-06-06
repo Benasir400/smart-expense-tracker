@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API_URL =
-    "https://smart-expense-tracker-api-v898.onrender.com/expenses";
+    import.meta.env.VITE_API_URL + "/expenses";
 
 // Get All Expenses
 export const getExpenses =

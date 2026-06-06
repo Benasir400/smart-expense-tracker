@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://smart-expense-tracker-api-v898.onrender.com/salary";
+const BASE_URL = import.meta.env.VITE_API_URL + "/salary";
 
 export const saveSalary = (data) => {
     return axios.post(
