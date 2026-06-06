@@ -46,10 +46,10 @@ A full-stack Expense Tracker application built using React and Spring Boot with 
 ## 📸 Screenshots
 
 ### Login Page
-![Login](screenshots/login.png)
+![Login Page](screenshots/login.png)
 
 ### Register Page
-![Register](screenshots/register.png)
+![Register Page](screenshots/register.png)
 
 ### Dashboard
 ![Dashboard](screenshots/dashboard.png)
@@ -60,8 +60,18 @@ A full-stack Expense Tracker application built using React and Spring Boot with 
 ### Expense List
 ![Expense List](screenshots/expense-list.png)
 
-### Report / PDF
+### Charts & Analytics
+![Charts](screenshots/charts.png)
+
+### Profile Page
+![Profile](screenshots/profile.png)
+
+### Forgot Password
+![Forgot Password](screenshots/forgot_password.png)
+
+### PDF Report
 ![Report](screenshots/report.png)
+
 
 
 ## 🎯 Future Improvements
