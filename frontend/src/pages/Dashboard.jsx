@@ -137,9 +137,8 @@ function Dashboard() {
     return (
         <div className="min-h-screen md:flex">
 
-           <div className="hidden md:flex w-72 bg-slate-950 border-r border-slate-800">
                 <Sidebar />
-            </div>
+            
             {/* MAIN */}
             <div className="flex-1 min-h-screen p-4 md:p-8 bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900">
 
