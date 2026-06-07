@@ -173,9 +173,24 @@ public class AuthController {
         return "Password Reset Successfully";
     }
 
-    // @PostMapping("/test-mail")
-    // public String testMail() {
-    //     emailService.sendOtp("your_email@gmail.com", "123456");
-    //     return "Mail Sent";
-    // }
+
+@GetMapping("/test-mail")
+public String testMail() {
+
+    try {
+
+        emailService.sendOtp(
+                "bena960@gmail.com",
+                "123456"
+        );
+
+        return "Mail Sent Successfully";
+
+    } catch (Exception e) {
+
+        e.printStackTrace();
+
+        return e.getMessage();
+    }
+}
 }
