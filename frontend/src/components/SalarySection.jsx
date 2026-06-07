@@ -8,14 +8,20 @@ function SalarySection() {
 
     const userId = localStorage.getItem("userEmail");
 
-    const fetchSalary = async () => {
-        const res = await getSalary(userId);
-        setSavedSalary(res.data);
-    };
-
     useEffect(() => {
+        let isMounted = true;
+
+        const fetchSalary = async () => {
+            const res = await getSalary(userId);
+            if (isMounted) setSavedSalary(res.data);
+        };
+
         fetchSalary();
-    }, []);
+
+        return () => {
+            isMounted = false;
+        };
+    }, [userId]);
 
     const isLocked = savedSalary !== null;
 
@@ -27,7 +33,8 @@ function SalarySection() {
             });
 
             alert("Salary locked for this month");
-            fetchSalary();
+            const res = await getSalary(userId);
+            setSavedSalary(res.data);
 
         } catch (err) {
             alert(err.response?.data || "Error");

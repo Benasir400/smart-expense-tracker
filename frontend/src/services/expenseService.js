@@ -1,51 +1,19 @@
-import axios from "axios";
+import API from "./api";
 
-const API_URL =
-    import.meta.env.VITE_API_URL + "/expenses";
+export const getExpenses = () =>
+    API.get("/expenses");
 
-// Get All Expenses
-export const getExpenses =
-    async () => {
+export const getUserExpenses = (email) =>
+    API.get(`/expenses/user/${email}`);
 
-        return await axios.get(
-            API_URL
-        );
-    };
+export const addExpense = (data) =>
+    API.post("/expenses", data);
 
-// Get User Expenses
-export const getUserExpenses =
-    async (email) => {
+export const deleteExpense = (id) =>
+    API.delete(`/expenses/${id}`);
 
-        return await axios.get(
-            `${API_URL}/user/${email}`
-        );
-    };
+export const updateExpense = (id, data) =>
+    API.put(`/expenses/${id}`, data);
 
-// Add Expense
-export const addExpense =
-    async (expense) => {
-
-        return await axios.post(
-            API_URL,
-            expense
-        );
-    };
-
-// Delete Expense
-export const deleteExpense =
-    async (id) => {
-
-        return await axios.delete(
-            `${API_URL}/${id}`
-        );
-    };
-
-// Update Expense
-export const updateExpense =
-    async (id, expense) => {
-
-        return await axios.put(
-            `${API_URL}/${id}`,
-            expense
-        );
-    };
+export const getMonthlyChart = (email) =>
+    API.get(`/expenses/monthly-chart/${email}`);

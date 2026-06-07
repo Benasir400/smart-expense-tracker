@@ -21,17 +21,23 @@ function MonthlyBarChart() {
     const [expenses, setExpenses] = useState([]);
 
     useEffect(() => {
-        fetchExpenses();
-    }, []);
+        let isMounted = true;
 
-    const fetchExpenses = async () => {
-        try {
-            const response = await getExpenses();
-            setExpenses(response.data);
-        } catch (error) {
-            console.log(error);
-        }
-    };
+        const fetchExpenses = async () => {
+            try {
+                const response = await getExpenses();
+                if (isMounted) setExpenses(response.data);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchExpenses();
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
 
     const grouped = {};
 

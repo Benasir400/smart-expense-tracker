@@ -22,7 +22,7 @@ function ForgotPassword() {
 
             setLoading(true);
 
-            await axios.post("http://localhost:8080/auth/forgot-password", {
+            await axios.post("${import.meta.env.VITE_API_URL}/auth/forgot-password", {
                 email
             });
 

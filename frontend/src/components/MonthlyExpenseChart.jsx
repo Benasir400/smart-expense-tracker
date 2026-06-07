@@ -10,20 +10,18 @@ import {
 
 function MonthlyExpenseChart({ data }) {
 
-  console.log("Chart Data:", data);
-
   return (
-    <div className="bg-white/10 p-4 sm:p-6 rounded-xl shadow-lg mt-6 w-full">
+    <div className="w-full rounded-xl bg-white/10 p-3 shadow-lg sm:p-5">
 
       {/* Title */}
-      <h2 className="text-lg sm:text-xl font-bold mb-4 text-white">
+      <h2 className="mb-4 text-lg font-bold text-white sm:text-xl">
         Monthly Expense Trend
       </h2>
 
       {/* Chart Wrapper */}
-      <div className="w-full overflow-x-auto">
+      <div className="h-[240px] w-full sm:h-[280px]">
 
-        <ResponsiveContainer width="100%" height={280}>
+        <ResponsiveContainer width="100%" height="100%">
 
           <LineChart data={data?.length ? data : []}>
 

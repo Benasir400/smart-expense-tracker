@@ -23,7 +23,6 @@ function VerifyOtp() {
 
     useEffect(() => {
         if (timer === 0) {
-            setCanResend(true);
             return;
         }
 
@@ -35,13 +34,15 @@ function VerifyOtp() {
 
     }, [timer]);
 
+    const canResendOtp = timer === 0 || canResend;
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
             setLoading(true);
 
-            await axios.post("http://localhost:8080/auth/verify-otp", {
+            await axios.post(`${import.meta.env.VITE_API_URL}/auth/verify-otp`, {
                 email,
                 otp
             });
@@ -59,7 +60,7 @@ function VerifyOtp() {
 
     const handleResend = async () => {
         try {
-            await axios.post("http://localhost:8080/auth/forgot-password", {
+            await axios.post(`${import.meta.env.VITE_API_URL}/auth/forgot-password`, {
                 email
             });
 
@@ -68,7 +69,7 @@ function VerifyOtp() {
             setTimer(60);
             setCanResend(false);
 
-        } catch (err) {
+        } catch {
             alert("Failed to resend OTP");
         }
     };
@@ -173,7 +174,7 @@ function VerifyOtp() {
                     {/* Timer / Resend */}
                     <div className="text-center mt-6 text-slate-300 text-sm sm:text-base">
 
-                        {canResend ? (
+                        {canResendOtp ? (
                             <button
                                 type="button"
                                 onClick={handleResend}

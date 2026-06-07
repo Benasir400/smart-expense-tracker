@@ -1,7 +1,4 @@
-import {
-    Routes,
-    Route
-} from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -13,58 +10,31 @@ import Profile from "./pages/Profile";
 import ForgotPassword from "./pages/ForgotPassword";
 import VerifyOtp from "./pages/VerifyOtp";
 import ResetPassword from "./pages/ResetPassword";
+
+import ProtectedRoute from "./components/ProtectedRoute";
+import Layout from "./layout/Layout";
+
 function App() {
-
     return (
-
         <Routes>
 
-            <Route
-                path="/"
-                element={<Login />}
-            />
+            {/* Public */}
+            <Route path="/" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/verify-otp" element={<VerifyOtp />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
 
-            <Route
-                path="/register"
-                element={<Register />}
-            />
+            {/* Protected + Layout */}
+            <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
 
-            <Route
-                path="/dashboard"
-                element={<Dashboard />}
-            />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/add-expense" element={<AddExpense />} />
+                <Route path="/history" element={<ExpenseHistory />} />
+                <Route path="/reports" element={<Reports />} />
+                <Route path="/profile" element={<Profile />} />
 
-            <Route
-                path="/add-expense"
-                element={<AddExpense />}
-            />
-            
-            <Route
-                path="/history"
-                element={<ExpenseHistory />}
-            />
-
-            <Route
-                path="/reports"
-                element={<Reports />}
-            />
-            <Route
-                path="/forgot-password"
-                element={<ForgotPassword />}
-            />
-            <Route
-                path="/verify-otp" 
-                element={<VerifyOtp/>} 
-            />
-            <Route
-                path="/reset-password"
-                element={<ResetPassword />}
-            />
-
-            <Route
-                path="/profile"
-                element={<Profile />}
-            />
+            </Route>
 
         </Routes>
     );

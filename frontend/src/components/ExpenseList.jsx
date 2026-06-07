@@ -16,7 +16,6 @@ import {
 import ExportPDF from "./ExportPDF";
 
 function ExpenseList() {
-
     const [expenses, setExpenses] = useState([]);
     const [search, setSearch] = useState("");
     const [editingId, setEditingId] = useState(null);
@@ -29,25 +28,36 @@ function ExpenseList() {
         userEmail: ""
     });
 
-    const fetchExpenses = async () => {
-        try {
-            const email = localStorage.getItem("userEmail");
-            const response = await getUserExpenses(email);
-            setExpenses(response.data);
-        } catch (error) {
-            console.log(error);
-        }
+    const loadExpenses = async () => {
+        const email = localStorage.getItem("userEmail");
+        const response = await getUserExpenses(email);
+        return response.data;
     };
 
     useEffect(() => {
+        let isMounted = true;
+
+        const fetchExpenses = async () => {
+            try {
+                const data = await loadExpenses();
+                if (isMounted) setExpenses(data);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
         fetchExpenses();
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
     const handleDelete = async (id) => {
         try {
             await deleteExpense(id);
             alert("Expense Deleted Successfully");
-            fetchExpenses();
+            setExpenses(await loadExpenses());
         } catch (error) {
             console.log(error);
         }
@@ -63,10 +73,17 @@ function ExpenseList() {
             await updateExpense(id, editedExpense);
             alert("Expense Updated Successfully");
             setEditingId(null);
-            fetchExpenses();
+            setExpenses(await loadExpenses());
         } catch (error) {
             console.log(error);
         }
+    };
+
+    const handleEditedExpenseChange = (field, value) => {
+        setEditedExpense((current) => ({
+            ...current,
+            [field]: value
+        }));
     };
 
     const filteredExpenses = expenses.filter((expense) =>
@@ -76,21 +93,15 @@ function ExpenseList() {
 
     return (
         <div className="p-3 md:p-6">
-
-            {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-5">
-
                 <h2 className="text-xl md:text-3xl text-white">
                     Expense List
                 </h2>
 
                 <ExportPDF expenses={filteredExpenses} />
-
             </div>
 
-            {/* Search */}
             <div className="flex items-center border border-white/20 rounded-xl p-3 mb-5 bg-white/10">
-
                 <FaSearch className="mr-3 text-gray-400" />
 
                 <input
@@ -100,20 +111,15 @@ function ExpenseList() {
                     onChange={(e) => setSearch(e.target.value)}
                     className="outline-none w-full bg-transparent text-white placeholder-gray-400"
                 />
-
             </div>
 
-            {/* Empty State */}
             {filteredExpenses.length === 0 ? (
                 <div className="bg-white/10 rounded-xl p-10 text-center text-gray-400 text-sm md:text-lg">
                     No expenses found
                 </div>
             ) : (
-
                 <div className="overflow-x-auto">
-
                     <table className="w-full min-w-[700px] border-collapse rounded-xl overflow-hidden">
-
                         <thead>
                             <tr className="bg-slate-700 text-white text-sm md:text-base">
                                 <th className="px-3 md:px-4 py-3">Title</th>
@@ -125,40 +131,88 @@ function ExpenseList() {
                         </thead>
 
                         <tbody>
-
                             {filteredExpenses.map((expense) => (
                                 <tr
                                     key={expense.id}
                                     className="bg-slate-800 text-gray-100 hover:bg-slate-700 transition"
                                 >
-
                                     <td className="px-3 md:px-4 py-3 border border-slate-600">
-                                        {expense.title}
+                                        {editingId === expense.id ? (
+                                            <input
+                                                value={editedExpense.title}
+                                                onChange={(e) =>
+                                                    handleEditedExpenseChange("title", e.target.value)
+                                                }
+                                                className="w-full rounded bg-slate-900 px-2 py-1 text-white outline-none"
+                                            />
+                                        ) : (
+                                            expense.title
+                                        )}
                                     </td>
 
                                     <td className="px-3 md:px-4 py-3 border border-slate-600 text-red-400 font-semibold">
-                                        ₹ {expense.amount}
+                                        {editingId === expense.id ? (
+                                            <input
+                                                type="number"
+                                                value={editedExpense.amount}
+                                                onChange={(e) =>
+                                                    handleEditedExpenseChange("amount", e.target.value)
+                                                }
+                                                className="w-full rounded bg-slate-900 px-2 py-1 text-white outline-none"
+                                            />
+                                        ) : (
+                                            <>Rs. {expense.amount}</>
+                                        )}
                                     </td>
 
                                     <td className="px-3 md:px-4 py-3 border border-slate-600">
-                                        {expense.category}
+                                        {editingId === expense.id ? (
+                                            <input
+                                                value={editedExpense.category}
+                                                onChange={(e) =>
+                                                    handleEditedExpenseChange("category", e.target.value)
+                                                }
+                                                className="w-full rounded bg-slate-900 px-2 py-1 text-white outline-none"
+                                            />
+                                        ) : (
+                                            expense.category
+                                        )}
                                     </td>
 
                                     <td className="px-3 md:px-4 py-3 border border-slate-600">
-                                        {expense.date}
+                                        {editingId === expense.id ? (
+                                            <input
+                                                type="date"
+                                                value={editedExpense.date}
+                                                onChange={(e) =>
+                                                    handleEditedExpenseChange("date", e.target.value)
+                                                }
+                                                className="w-full rounded bg-slate-900 px-2 py-1 text-white outline-none"
+                                            />
+                                        ) : (
+                                            expense.date
+                                        )}
                                     </td>
 
                                     <td className="px-3 md:px-4 py-3 border border-slate-600">
-
-                                        {/* Mobile stack buttons */}
                                         <div className="flex flex-col md:flex-row gap-2 justify-center">
-
-                                            <button
-                                                className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-3 py-2 rounded-lg flex items-center gap-2 text-sm"
-                                            >
-                                                <FaEdit />
-                                                Edit
-                                            </button>
+                                            {editingId === expense.id ? (
+                                                <button
+                                                    onClick={() => handleUpdate(expense.id)}
+                                                    className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-3 py-2 rounded-lg flex items-center gap-2 text-sm"
+                                                >
+                                                    <FaSave />
+                                                    Save
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    onClick={() => handleEdit(expense)}
+                                                    className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-3 py-2 rounded-lg flex items-center gap-2 text-sm"
+                                                >
+                                                    <FaEdit />
+                                                    Edit
+                                                </button>
+                                            )}
 
                                             <button
                                                 onClick={() => handleDelete(expense.id)}
@@ -167,22 +221,14 @@ function ExpenseList() {
                                                 <FaTrash />
                                                 Delete
                                             </button>
-
                                         </div>
-
                                     </td>
-
                                 </tr>
                             ))}
-
                         </tbody>
-
                     </table>
-
                 </div>
-
             )}
-
         </div>
     );
 }

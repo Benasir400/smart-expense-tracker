@@ -1,16 +1,7 @@
-import axios from "axios";
+import API from "./api";
 
-const BASE_URL = import.meta.env.VITE_API_URL + "/salary";
+export const saveSalary = (data) =>
+    API.post("/salary/save", data);
 
-export const saveSalary = (data) => {
-    return axios.post(
-        `${BASE_URL}/save`,
-        data
-    );
-};
-
-export const getSalary = (email) => {
-    return axios.get(
-        `${BASE_URL}/${email}`
-    );
-};
+export const getSalary = (email) =>
+    API.get(`/salary/${email}`);

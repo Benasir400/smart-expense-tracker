@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Sidebar from "../components/Sidebar";
 
+import { useNavigate } from "react-router-dom";
 import {
     FaUser,
     FaEnvelope,
@@ -50,25 +49,13 @@ function Profile() {
             .toUpperCase() || "U";
 
     return (
-        <div className="flex min-h-screen bg-slate-950 text-white">
-
-            {/* Sidebar (handles mobile + desktop internally) */}
-            <Sidebar />
-
-            {/* MAIN CONTENT */}
-            <div className="flex-1 min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 relative overflow-hidden p-4 md:p-8 pt-20 md:pt-8">
-
-                {/* Background Effects */}
-                <div className="absolute top-0 left-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-[150px]" />
-                <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-[150px]" />
-                <div className="absolute top-1/2 left-1/2 w-80 h-80 bg-blue-500/10 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2" />
-
+        <div className="relative min-h-screen overflow-hidden p-4 sm:p-5 md:p-8">
                 <div className="relative z-10">
 
                     {/* Header */}
-                    <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-4 md:p-6 mb-6 md:mb-8 shadow-lg">
+                    <div className="mb-5 rounded-2xl border border-white/20 bg-white/10 p-4 shadow-lg backdrop-blur-xl sm:p-5 md:mb-8 md:rounded-3xl md:p-6">
 
-                        <h1 className="text-2xl md:text-4xl font-bold text-white">
+                        <h1 className="text-2xl font-bold text-white md:text-4xl">
                             My Profile
                         </h1>
 
@@ -79,7 +66,7 @@ function Profile() {
                     </div>
 
                     {/* Profile Card */}
-                    <div className="max-w-4xl mx-auto bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-4 md:p-8 shadow-2xl">
+                    <div className="mx-auto max-w-4xl rounded-2xl border border-white/20 bg-white/10 p-4 shadow-2xl backdrop-blur-xl sm:p-5 md:rounded-3xl md:p-8">
 
                         {/* Avatar */}
                         <div className="flex flex-col items-center mb-8">
@@ -219,7 +206,6 @@ function Profile() {
                     </div>
 
                 </div>
-            </div>
         </div>
     );
 }
