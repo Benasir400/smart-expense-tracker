@@ -154,7 +154,7 @@ function Login() {
 
                     </div>
 
-                    {/* FORGOT */}
+                    {/* FORGOT
                     <div className="flex justify-end mb-5 md:mb-6">
                         <Link
                             to="/forgot-password"
@@ -162,7 +162,7 @@ function Login() {
                         >
                             Forgot Password?
                         </Link>
-                    </div>
+                    </div> */}
 
                     {/* LOGIN BUTTON */}
                     <button

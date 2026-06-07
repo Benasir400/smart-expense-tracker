@@ -1,27 +1,27 @@
-package com.example.backend.service;
+// package com.example.backend.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Service;
+// import lombok.RequiredArgsConstructor;
+// import org.springframework.mail.SimpleMailMessage;
+// import org.springframework.mail.javamail.JavaMailSender;
+// import org.springframework.stereotype.Service;
 
-@Service
-@RequiredArgsConstructor
-public class EmailService {
+// @Service
+// @RequiredArgsConstructor
+// public class EmailService {
 
-    private final JavaMailSender mailSender;
+//     private final JavaMailSender mailSender;
 
-    public void sendOtp(String email, String otp) {
+//     public void sendOtp(String email, String otp) {
 
-        SimpleMailMessage message = new SimpleMailMessage();
+//         SimpleMailMessage message = new SimpleMailMessage();
 
-        message.setTo(email);
-        message.setSubject("Password Reset OTP");
-        message.setText(
-                "Your OTP is : " + otp +
-                "\n\nValid for 5 minutes."
-        );
+//         message.setTo(email);
+//         message.setSubject("Password Reset OTP");
+//         message.setText(
+//                 "Your OTP is : " + otp +
+//                 "\n\nValid for 5 minutes."
+//         );
 
-        mailSender.send(message);
-    }
-}
+//         mailSender.send(message);
+//     }
+// }

@@ -1,8 +1,8 @@
-package com.example.backend.dto;
+// package com.example.backend.dto;
 
-import lombok.Data;
+// import lombok.Data;
 
-@Data
-public class ForgotPasswordRequest {
-    private String email;
-}
+// @Data
+// public class ForgotPasswordRequest {
+//     private String email;
+// }

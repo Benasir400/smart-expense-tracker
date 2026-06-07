@@ -1,141 +1,141 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { FaKey, FaCheckCircle, FaRedo } from "react-icons/fa";
-import { verifyOtp, forgotPassword } from "../services/authService";
+// import { useEffect, useState } from "react";
+// import { useNavigate } from "react-router-dom";
+// import { FaKey, FaCheckCircle, FaRedo } from "react-icons/fa";
+// import { verifyOtp, forgotPassword } from "../services/authService";
 
-function VerifyOtp() {
+// function VerifyOtp() {
 
-    const [otp, setOtp] = useState("");
-    const [loading, setLoading] = useState(false);
+//     const [otp, setOtp] = useState("");
+//     const [loading, setLoading] = useState(false);
 
-    const [timer, setTimer] = useState(60);
-    const [canResend, setCanResend] = useState(false);
+//     const [timer, setTimer] = useState(60);
+//     const [canResend, setCanResend] = useState(false);
 
-    const navigate = useNavigate();
+//     const navigate = useNavigate();
 
-    const email = localStorage.getItem("resetEmail");
+//     const email = localStorage.getItem("resetEmail");
 
-    useEffect(() => {
+//     useEffect(() => {
 
-        if (timer === 0) {
-            setCanResend(true);
-            return;
-        }
+//         if (timer === 0) {
+//             setCanResend(true);
+//             return;
+//         }
 
-        const interval = setInterval(() => {
-            setTimer(prev => prev - 1);
-        }, 1000);
+//         const interval = setInterval(() => {
+//             setTimer(prev => prev - 1);
+//         }, 1000);
 
-        return () => clearInterval(interval);
+//         return () => clearInterval(interval);
 
-    }, [timer]);
+//     }, [timer]);
 
-    const handleSubmit = async (e) => {
+//     const handleSubmit = async (e) => {
 
-        e.preventDefault();
+//         e.preventDefault();
 
-        try {
+//         try {
 
-            setLoading(true);
+//             setLoading(true);
 
-            const res = await verifyOtp(email, otp);
+//             const res = await verifyOtp(email, otp);
 
-            alert(res.data);
+//             alert(res.data);
 
-            navigate("/reset-password");
+//             navigate("/reset-password");
 
-        } catch (error) {
+//         } catch (error) {
 
-            alert(
-                error?.response?.data ||
-                "Invalid OTP"
-            );
+//             alert(
+//                 error?.response?.data ||
+//                 "Invalid OTP"
+//             );
 
-        } finally {
+//         } finally {
 
-            setLoading(false);
-        }
-    };
+//             setLoading(false);
+//         }
+//     };
 
-    const handleResend = async () => {
+//     const handleResend = async () => {
 
-        try {
+//         try {
 
-            await forgotPassword(email);
+//             await forgotPassword(email);
 
-            alert("OTP Sent Again");
+//             alert("OTP Sent Again");
 
-            setTimer(60);
-            setCanResend(false);
+//             setTimer(60);
+//             setCanResend(false);
 
-        } catch {
+//         } catch {
 
-            alert("Failed to resend OTP");
-        }
-    };
+//             alert("Failed to resend OTP");
+//         }
+//     };
 
-    return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 px-4">
+//     return (
+//         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 px-4">
 
-            <form className="w-full max-w-md backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl p-8">
+//             <form className="w-full max-w-md backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl p-8">
 
-                <div className="flex justify-center mb-5">
-                    <div className="bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 p-4 rounded-3xl">
-                        <FaKey className="text-white text-4xl" />
-                    </div>
-                </div>
+//                 <div className="flex justify-center mb-5">
+//                     <div className="bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 p-4 rounded-3xl">
+//                         <FaKey className="text-white text-4xl" />
+//                     </div>
+//                 </div>
 
-                <h2 className="text-center text-white text-3xl font-bold">
-                    Verify OTP
-                </h2>
+//                 <h2 className="text-center text-white text-3xl font-bold">
+//                     Verify OTP
+//                 </h2>
 
-                <p className="text-center text-cyan-400 mt-2 mb-6 break-all">
-                    {email}
-                </p>
+//                 <p className="text-center text-cyan-400 mt-2 mb-6 break-all">
+//                     {email}
+//                 </p>
 
-                <input
-                    type="text"
-                    maxLength={6}
-                    placeholder="Enter OTP"
-                    className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-center tracking-widest text-white outline-none mb-6"
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
-                />
+//                 <input
+//                     type="text"
+//                     maxLength={6}
+//                     placeholder="Enter OTP"
+//                     className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-center tracking-widest text-white outline-none mb-6"
+//                     value={otp}
+//                     onChange={(e) => setOtp(e.target.value)}
+//                 />
 
-                <button
-                    onClick={handleSubmit}
-                    disabled={loading}
-                    className="w-full bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 py-3 rounded-xl text-white font-bold"
-                >
-                    <FaCheckCircle className="inline mr-2" />
-                    {loading ? "Verifying..." : "Verify OTP"}
-                </button>
+//                 <button
+//                     onClick={handleSubmit}
+//                     disabled={loading}
+//                     className="w-full bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 py-3 rounded-xl text-white font-bold"
+//                 >
+//                     <FaCheckCircle className="inline mr-2" />
+//                     {loading ? "Verifying..." : "Verify OTP"}
+//                 </button>
 
-                <div className="text-center mt-5">
+//                 <div className="text-center mt-5">
 
-                    {canResend ? (
-                        <button
-                            onClick={handleResend}
-                            className="text-cyan-400"
-                        >
-                            <FaRedo className="inline mr-2" />
-                            Resend OTP
-                        </button>
-                    ) : (
-                        <p className="text-slate-300">
-                            Resend OTP in
-                            <span className="text-cyan-400 ml-2">
-                                {timer}s
-                            </span>
-                        </p>
-                    )}
+//                     {canResend ? (
+//                         <button
+//                             onClick={handleResend}
+//                             className="text-cyan-400"
+//                         >
+//                             <FaRedo className="inline mr-2" />
+//                             Resend OTP
+//                         </button>
+//                     ) : (
+//                         <p className="text-slate-300">
+//                             Resend OTP in
+//                             <span className="text-cyan-400 ml-2">
+//                                 {timer}s
+//                             </span>
+//                         </p>
+//                     )}
 
-                </div>
+//                 </div>
 
-            </form>
+//             </form>
 
-        </div>
-    );
-}
+//         </div>
+//     );
+// }
 
-export default VerifyOtp;
+// export default VerifyOtp;

@@ -25,9 +25,9 @@ public class User {
 
     private String password;
 
-    private String otp;
+    // private String otp;
 
-    private Long otpExpiryTime;
+    // private Long otpExpiryTime;
 
-    private Boolean otpVerified = false;
+    // private Boolean otpVerified = false;
 }

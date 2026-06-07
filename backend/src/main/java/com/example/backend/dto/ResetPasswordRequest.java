@@ -1,9 +1,9 @@
-package com.example.backend.dto;
+// package com.example.backend.dto;
 
-import lombok.Data;
+// import lombok.Data;
 
-@Data
-public class ResetPasswordRequest {
-    private String email;
-    private String newPassword;
-}
+// @Data
+// public class ResetPasswordRequest {
+//     private String email;
+//     private String newPassword;
+// }
