@@ -1,27 +1,24 @@
 package com.example.backend.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class EmailService {
 
-    @Autowired
-    private JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
 
     public void sendOtp(String email, String otp) {
 
-        SimpleMailMessage message =
-                new SimpleMailMessage();
+        SimpleMailMessage message = new SimpleMailMessage();
 
         message.setTo(email);
-
         message.setSubject("Password Reset OTP");
-
         message.setText(
-                "Your OTP is: " + otp +
+                "Your OTP is : " + otp +
                 "\n\nValid for 5 minutes."
         );
 

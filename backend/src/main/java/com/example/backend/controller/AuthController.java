@@ -29,7 +29,7 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
     @Autowired
-private EmailService emailService;
+    private EmailService emailService;
 
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
@@ -43,15 +43,15 @@ private EmailService emailService;
             return "Email already exists";
         }
         if (request.getPhone() == null || request.getPhone().length() != 10) {
-    return "Phone number must be 10 digits";
-}
-if (!request.getEmail().contains("@")) {
-    return "Invalid Email";
-}
+            return "Phone number must be 10 digits";
+        }
+        if (!request.getEmail().contains("@")) {
+            return "Invalid Email";
+        }
         User user = new User();
         user.setName(request.getName());
         user.setEmail(request.getEmail());
-        user.setPhone(request.getPhone());   // ✅ ADDED
+        user.setPhone(request.getPhone()); // ✅ ADDED
         user.setPassword(encoder.encode(request.getPassword()));
 
         repository.save(user);
@@ -85,88 +85,97 @@ if (!request.getEmail().contains("@")) {
         response.put("message", "Invalid Credentials");
         return response;
     }
+
     @PostMapping("/forgot-password")
-public String forgotPassword(
-        @RequestBody ForgotPasswordRequest request) {
+    public String forgotPassword(
+            @RequestBody ForgotPasswordRequest request) {
 
-    Optional<User> user =
-            repository.findByEmail(
-                    request.getEmail());
+        User user = repository.findByEmail(request.getEmail())
+                .orElse(null);
 
-    if (user.isEmpty()) {
-        return "Email not found";
+        if (user == null) {
+            return "Email not found";
+        }
+
+        String otp = String.valueOf(
+                (int) (100000 + Math.random() * 900000));
+
+        user.setOtp(otp);
+
+        user.setOtpExpiryTime(
+                System.currentTimeMillis() + 300000);
+
+        user.setOtpVerified(false);
+
+        repository.save(user);
+
+        emailService.sendOtp(
+                request.getEmail(),
+                otp);
+
+        return "OTP Sent Successfully";
     }
 
-    String otp =
-            String.valueOf(
-                    (int)(100000 + Math.random() * 900000)
-            );
+    @PostMapping("/verify-otp")
+    public String verifyOtp(
+            @RequestBody VerifyOtpRequest request) {
 
-    user.get().setOtp(otp);
+        User user = repository.findByEmail(
+                request.getEmail()).orElse(null);
 
-    user.get().setOtpExpiryTime(
-            System.currentTimeMillis()
-                    + 5 * 60 * 1000
-    );
+        if (user == null) {
+            return "User Not Found";
+        }
 
-    repository.save(user.get());
+        if (!request.getOtp().equals(user.getOtp())) {
+            return "Invalid OTP";
+        }
 
-    emailService.sendOtp(
-            request.getEmail(),
-            otp
-    );
+        if (System.currentTimeMillis() > user.getOtpExpiryTime()) {
 
-    return "OTP Sent Successfully";
-}
-@PostMapping("/verify-otp")
-public String verifyOtp(
-        @RequestBody VerifyOtpRequest request) {
+            return "OTP Expired";
+        }
 
-    Optional<User> user =
-            repository.findByEmail(
-                    request.getEmail());
+        user.setOtpVerified(true);
 
-    if (user.isEmpty()) {
-        return "User Not Found";
+        repository.save(user);
+
+        return "OTP Verified Successfully";
     }
 
-    if (!request.getOtp().equals(
-            user.get().getOtp())) {
+    @PostMapping("/reset-password")
+    public String resetPassword(
+            @RequestBody ResetPasswordRequest request) {
 
-        return "Invalid OTP";
+        User user = repository.findByEmail(
+                request.getEmail()).orElse(null);
+
+        if (user == null) {
+            return "User Not Found";
+        }
+
+        if (!Boolean.TRUE.equals(
+                user.getOtpVerified())) {
+
+            return "Verify OTP First";
+        }
+
+        user.setPassword(
+                encoder.encode(
+                        request.getNewPassword()));
+
+        user.setOtp(null);
+        user.setOtpExpiryTime(null);
+        user.setOtpVerified(false);
+
+        repository.save(user);
+
+        return "Password Reset Successfully";
     }
 
-    if (System.currentTimeMillis() >
-            user.get().getOtpExpiryTime()) {
-
-        return "OTP Expired";
-    }
-
-    return "OTP Verified";
-}
-@PostMapping("/reset-password")
-public String resetPassword(
-        @RequestBody ResetPasswordRequest request) {
-
-    Optional<User> user =
-            repository.findByEmail(
-                    request.getEmail());
-
-    if (user.isEmpty()) {
-        return "User Not Found";
-    }
-
-    user.get().setPassword(
-            encoder.encode(
-                    request.getNewPassword()
-            )
-    );
-
-    user.get().setOtp(null);
-    user.get().setOtpExpiryTime(null);
-
-    repository.save(user.get());
-
-    return "Password Reset Successfully";
-}
+    // @PostMapping("/test-mail")
+    // public String testMail() {
+    //     emailService.sendOtp("your_email@gmail.com", "123456");
+    //     return "Mail Sent";
+    // }
 }

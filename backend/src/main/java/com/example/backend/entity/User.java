@@ -1,14 +1,15 @@
 package com.example.backend.entity;
 
 import jakarta.persistence.*;
-
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "users")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User {
 
     @Id
@@ -20,10 +21,13 @@ public class User {
     @Column(unique = true)
     private String email;
 
+    private String phone;
+
     private String password;
 
-    private String phone; 
     private String otp;
 
-    private Long otpExpiryTime;  // ✅ ADD THIS
+    private Long otpExpiryTime;
+
+    private Boolean otpVerified = false;
 }
