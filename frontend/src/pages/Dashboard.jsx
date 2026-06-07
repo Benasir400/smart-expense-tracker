@@ -208,6 +208,12 @@ function Dashboard() {
                 </div>
 
             </div>
+            {isBudgetExceeded && (
+                <div className="flex items-center gap-2 rounded-xl bg-red-500/20 border border-red-500 p-3 text-red-400">
+                    <FaExclamationTriangle />
+                    <span>Budget Exceeded! You have spent more than your salary.</span>
+                </div>
+            )}
 
             <div className="rounded-2xl bg-white/10 p-4 sm:p-5">
                 <div className="flex justify-between mb-2">

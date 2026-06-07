@@ -93,12 +93,14 @@ function ExpenseList() {
 
     return (
         <div className="p-3 md:p-6">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-5">
-                <h2 className="text-xl md:text-3xl text-white">
+            <div className="flex items-center justify-between gap-3 mb-5">
+                <h2 className="text-xl md:text-3xl font-bold text-white">
                     Expense List
                 </h2>
 
-                <ExportPDF expenses={filteredExpenses} />
+                <div className="shrink-0">
+                    <ExportPDF expenses={filteredExpenses} />
+                </div>
             </div>
 
             <div className="flex items-center border border-white/20 rounded-xl p-3 mb-5 bg-white/10">
@@ -118,116 +120,250 @@ function ExpenseList() {
                     No expenses found
                 </div>
             ) : (
-                <div className="overflow-x-auto">
-                    <table className="w-full min-w-[700px] border-collapse rounded-xl overflow-hidden">
-                        <thead>
-                            <tr className="bg-slate-700 text-white text-sm md:text-base">
-                                <th className="px-3 md:px-4 py-3">Title</th>
-                                <th className="px-3 md:px-4 py-3">Amount</th>
-                                <th className="px-3 md:px-4 py-3">Category</th>
-                                <th className="px-3 md:px-4 py-3">Date</th>
-                                <th className="px-3 md:px-4 py-3">Actions</th>
-                            </tr>
-                        </thead>
+                <>
+                    {/* Mobile View */}
+                    <div className="md:hidden space-y-4">
+                        {filteredExpenses.map((expense) => (
+                            <div
+                                key={expense.id}
+                                className="bg-slate-800 rounded-xl border border-slate-700 p-4"
+                            >
+                                <div className="space-y-3">
 
-                        <tbody>
-                            {filteredExpenses.map((expense) => (
-                                <tr
-                                    key={expense.id}
-                                    className="bg-slate-800 text-gray-100 hover:bg-slate-700 transition"
-                                >
-                                    <td className="px-3 md:px-4 py-3 border border-slate-600">
+                                    <div>
+                                        <p className="text-xs text-gray-400">Title</p>
                                         {editingId === expense.id ? (
                                             <input
                                                 value={editedExpense.title}
                                                 onChange={(e) =>
-                                                    handleEditedExpenseChange("title", e.target.value)
+                                                    handleEditedExpenseChange(
+                                                        "title",
+                                                        e.target.value
+                                                    )
                                                 }
-                                                className="w-full rounded bg-slate-900 px-2 py-1 text-white outline-none"
+                                                className="w-full rounded bg-slate-900 px-3 py-2 text-white"
                                             />
                                         ) : (
-                                            expense.title
+                                            <p className="font-medium">
+                                                {expense.title}
+                                            </p>
                                         )}
-                                    </td>
+                                    </div>
 
-                                    <td className="px-3 md:px-4 py-3 border border-slate-600 text-red-400 font-semibold">
+                                    <div>
+                                        <p className="text-xs text-gray-400">Amount</p>
                                         {editingId === expense.id ? (
                                             <input
                                                 type="number"
                                                 value={editedExpense.amount}
                                                 onChange={(e) =>
-                                                    handleEditedExpenseChange("amount", e.target.value)
+                                                    handleEditedExpenseChange(
+                                                        "amount",
+                                                        e.target.value
+                                                    )
                                                 }
-                                                className="w-full rounded bg-slate-900 px-2 py-1 text-white outline-none"
+                                                className="w-full rounded bg-slate-900 px-3 py-2 text-white"
                                             />
                                         ) : (
-                                            <>Rs. {expense.amount}</>
+                                            <p className="font-bold text-red-400">
+                                                Rs. {expense.amount}
+                                            </p>
                                         )}
-                                    </td>
+                                    </div>
 
-                                    <td className="px-3 md:px-4 py-3 border border-slate-600">
+                                    <div>
+                                        <p className="text-xs text-gray-400">Category</p>
                                         {editingId === expense.id ? (
                                             <input
                                                 value={editedExpense.category}
                                                 onChange={(e) =>
-                                                    handleEditedExpenseChange("category", e.target.value)
+                                                    handleEditedExpenseChange(
+                                                        "category",
+                                                        e.target.value
+                                                    )
                                                 }
-                                                className="w-full rounded bg-slate-900 px-2 py-1 text-white outline-none"
+                                                className="w-full rounded bg-slate-900 px-3 py-2 text-white"
                                             />
                                         ) : (
-                                            expense.category
+                                            <p>{expense.category}</p>
                                         )}
-                                    </td>
+                                    </div>
 
-                                    <td className="px-3 md:px-4 py-3 border border-slate-600">
+                                    <div>
+                                        <p className="text-xs text-gray-400">Date</p>
                                         {editingId === expense.id ? (
                                             <input
                                                 type="date"
                                                 value={editedExpense.date}
                                                 onChange={(e) =>
-                                                    handleEditedExpenseChange("date", e.target.value)
+                                                    handleEditedExpenseChange(
+                                                        "date",
+                                                        e.target.value
+                                                    )
                                                 }
-                                                className="w-full rounded bg-slate-900 px-2 py-1 text-white outline-none"
+                                                className="w-full rounded bg-slate-900 px-3 py-2 text-white"
                                             />
                                         ) : (
-                                            expense.date
+                                            <p>{expense.date}</p>
                                         )}
-                                    </td>
+                                    </div>
 
-                                    <td className="px-3 md:px-4 py-3 border border-slate-600">
-                                        <div className="flex flex-col md:flex-row gap-2 justify-center">
-                                            {editingId === expense.id ? (
-                                                <button
-                                                    onClick={() => handleUpdate(expense.id)}
-                                                    className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-3 py-2 rounded-lg flex items-center gap-2 text-sm"
-                                                >
-                                                    <FaSave />
-                                                    Save
-                                                </button>
-                                            ) : (
-                                                <button
-                                                    onClick={() => handleEdit(expense)}
-                                                    className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-3 py-2 rounded-lg flex items-center gap-2 text-sm"
-                                                >
-                                                    <FaEdit />
-                                                    Edit
-                                                </button>
-                                            )}
-
+                                    <div className="flex gap-2 pt-2">
+                                        {editingId === expense.id ? (
                                             <button
-                                                onClick={() => handleDelete(expense.id)}
-                                                className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg flex items-center gap-2 text-sm"
+                                                onClick={() => handleUpdate(expense.id)}
+                                                className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 py-2 rounded-lg flex items-center justify-center gap-2"
                                             >
-                                                <FaTrash />
-                                                Delete
+                                                <FaSave />
+                                                Save
                                             </button>
-                                        </div>
-                                    </td>
+                                        ) : (
+                                            <button
+                                                onClick={() => handleEdit(expense)}
+                                                className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 py-2 rounded-lg flex items-center justify-center gap-2"
+                                            >
+                                                <FaEdit />
+                                                Edit
+                                            </button>
+                                        )}
+
+                                        <button
+                                            onClick={() => handleDelete(expense.id)}
+                                            className="flex-1 bg-red-600 hover:bg-red-700 py-2 rounded-lg flex items-center justify-center gap-2"
+                                        >
+                                            <FaTrash />
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Desktop Table */}
+                    <div className="hidden md:block overflow-x-auto">
+                        <table className="w-full min-w-[700px] border-collapse rounded-xl overflow-hidden">
+                            <thead>
+                                <tr className="bg-slate-700 text-white text-sm md:text-base">
+                                    <th className="px-3 md:px-4 py-3">Title</th>
+                                    <th className="px-3 md:px-4 py-3">Amount</th>
+                                    <th className="px-3 md:px-4 py-3">Category</th>
+                                    <th className="px-3 md:px-4 py-3">Date</th>
+                                    <th className="px-3 md:px-4 py-3">Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+
+                            <tbody>
+                                {filteredExpenses.map((expense) => (
+                                    <tr
+                                        key={expense.id}
+                                        className="bg-slate-800 text-gray-100 hover:bg-slate-700 transition"
+                                    >
+                                        <td className="px-3 md:px-4 py-3 border border-slate-600">
+                                            {editingId === expense.id ? (
+                                                <input
+                                                    value={editedExpense.title}
+                                                    onChange={(e) =>
+                                                        handleEditedExpenseChange(
+                                                            "title",
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    className="w-full rounded bg-slate-900 px-2 py-1 text-white outline-none"
+                                                />
+                                            ) : (
+                                                expense.title
+                                            )}
+                                        </td>
+
+                                        <td className="px-3 md:px-4 py-3 border border-slate-600 text-red-400 font-semibold">
+                                            {editingId === expense.id ? (
+                                                <input
+                                                    type="number"
+                                                    value={editedExpense.amount}
+                                                    onChange={(e) =>
+                                                        handleEditedExpenseChange(
+                                                            "amount",
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    className="w-full rounded bg-slate-900 px-2 py-1 text-white outline-none"
+                                                />
+                                            ) : (
+                                                <>Rs. {expense.amount}</>
+                                            )}
+                                        </td>
+
+                                        <td className="px-3 md:px-4 py-3 border border-slate-600">
+                                            {editingId === expense.id ? (
+                                                <input
+                                                    value={editedExpense.category}
+                                                    onChange={(e) =>
+                                                        handleEditedExpenseChange(
+                                                            "category",
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    className="w-full rounded bg-slate-900 px-2 py-1 text-white outline-none"
+                                                />
+                                            ) : (
+                                                expense.category
+                                            )}
+                                        </td>
+
+                                        <td className="px-3 md:px-4 py-3 border border-slate-600">
+                                            {editingId === expense.id ? (
+                                                <input
+                                                    type="date"
+                                                    value={editedExpense.date}
+                                                    onChange={(e) =>
+                                                        handleEditedExpenseChange(
+                                                            "date",
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    className="w-full rounded bg-slate-900 px-2 py-1 text-white outline-none"
+                                                />
+                                            ) : (
+                                                expense.date
+                                            )}
+                                        </td>
+
+                                        <td className="px-3 md:px-4 py-3 border border-slate-600">
+                                            <div className="flex gap-2 justify-center">
+                                                {editingId === expense.id ? (
+                                                    <button
+                                                        onClick={() => handleUpdate(expense.id)}
+                                                        className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-3 py-2 rounded-lg flex items-center gap-2 text-sm"
+                                                    >
+                                                        <FaSave />
+                                                        Save
+                                                    </button>
+                                                ) : (
+                                                    <button
+                                                        onClick={() => handleEdit(expense)}
+                                                        className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-3 py-2 rounded-lg flex items-center gap-2 text-sm"
+                                                    >
+                                                        <FaEdit />
+                                                        Edit
+                                                    </button>
+                                                )}
+
+                                                <button
+                                                    onClick={() => handleDelete(expense.id)}
+                                                    className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg flex items-center gap-2 text-sm"
+                                                >
+                                                    <FaTrash />
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </>
             )}
         </div>
     );
