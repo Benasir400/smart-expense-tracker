@@ -22,7 +22,7 @@ function ForgotPassword() {
 
             setLoading(true);
 
-            await axios.post("https://smart-expense-tracker-api-v898.onrender.com/forgot-password", {
+            await axios.post("https://smart-expense-tracker-api-v898.onrender.com/auth/forgot-password", {
                 email
             });
 

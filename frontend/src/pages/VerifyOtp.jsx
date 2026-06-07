@@ -42,7 +42,7 @@ function VerifyOtp() {
         try {
             setLoading(true);
 
-            await axios.post("https://smart-expense-tracker-api-v898.onrender.com/verify-otp", {
+            await axios.post("https://smart-expense-tracker-api-v898.onrender.com/auth/verify-otp", {
                 email,
                 otp
             });
@@ -60,7 +60,7 @@ function VerifyOtp() {
 
     const handleResend = async () => {
         try {
-            await axios.post(`https://smart-expense-tracker-api-v898.onrender.com/forgot-password`, {
+            await axios.post(`https://smart-expense-tracker-api-v898.onrender.com/auth/forgot-password`, {
                 email
             });
 
