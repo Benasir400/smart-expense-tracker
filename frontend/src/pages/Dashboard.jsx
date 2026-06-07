@@ -69,7 +69,15 @@ function Dashboard() {
         () => expenses.reduce((sum, e) => sum + Number(e.amount || 0), 0),
         [expenses]
     );
+    const highestExpense = useMemo(() => {
+        if (expenses.length === 0) return null;
 
+        return expenses.reduce((max, expense) =>
+            Number(expense.amount) > Number(max.amount)
+                ? expense
+                : max
+        );
+    }, [expenses]);
     const salary = salaryData?.amount || 0;
     const balance = salary - totalExpense;
 
@@ -126,7 +134,7 @@ function Dashboard() {
                 </Link>
             </div>
 
-            <div className="rounded-2xl bg-white/10 p-4 sm:p-5">
+            <div className="rounded-xl bg-white/10 p-4 sm:p-3">
                 <h2 className="font-bold mb-3">Monthly Salary</h2>
 
                 {salary > 0 ? (
@@ -151,21 +159,54 @@ function Dashboard() {
                     </div>
                 )}
             </div>
+            {/* Summary Cards */}
+            <div className="grid grid-cols-2 gap-3">
 
-            {isBudgetExceeded && (
-                <div className="bg-red-500 p-4 rounded-xl flex items-center gap-2">
-                    <FaExclamationTriangle />
-                    Budget Exceeded!
+                <div className="rounded-xl bg-white/10 p-3">
+                    <p className="text-xs text-gray-400">Highest Expense</p>
+
+                    {highestExpense ? (
+                        <>
+                            <h2 className="mt-1 text-lg font-bold text-yellow-400">
+                                ₹{Number(highestExpense.amount).toLocaleString()}
+                            </h2>
+
+                            <p className="text-xs text-gray-300 truncate">
+                                {highestExpense.title}
+                            </p>
+                        </>
+                    ) : (
+                        <p className="text-xs text-gray-400">No expenses</p>
+                    )}
                 </div>
-            )}
 
-            <div className="rounded-2xl bg-gradient-to-r from-blue-500 to-purple-600 p-4 sm:p-5">
-                <h2 className="font-bold">Financial Status</h2>
-                <p>
-                    {balance >= 0
-                        ? "You are managing well"
-                        : "Overspending detected"}
-                </p>
+                <div className="rounded-xl bg-white/10 p-3">
+                    <p className="text-xs text-gray-400">Total Expenses</p>
+
+                    <h2 className="mt-1 text-lg font-bold text-red-400">
+                        ₹{totalExpense.toLocaleString()}
+                    </h2>
+                </div>
+
+                <div className="rounded-xl bg-white/10 p-3">
+                    <p className="text-xs text-gray-400">Balance</p>
+
+                    <h2
+                        className={`mt-1 text-lg font-bold ${balance >= 0 ? "text-cyan-400" : "text-red-400"
+                            }`}
+                    >
+                        ₹{balance.toLocaleString()}
+                    </h2>
+                </div>
+
+                <div className="rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 p-3">
+                    <p className="text-xs">Status</p>
+
+                    <h2 className="text-sm font-semibold">
+                        {balance >= 0 ? "Good" : "Overspending"}
+                    </h2>
+                </div>
+
             </div>
 
             <div className="rounded-2xl bg-white/10 p-4 sm:p-5">
