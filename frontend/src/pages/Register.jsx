@@ -31,7 +31,7 @@ function Register() {
     e.preventDefault();
 
     try {
-      await axios.post("${import.meta.env.VITE_API_URL}/auth/register", formData);
+      await axios.post("https://smart-expense-tracker-api-v898.onrender.com/auth/register", formData);
 
       alert("Registration Successful");
       navigate("/");

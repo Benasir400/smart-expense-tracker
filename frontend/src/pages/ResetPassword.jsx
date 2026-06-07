@@ -36,7 +36,7 @@ function ResetPassword() {
             setLoading(true);
 
             await axios.post(
-                `${import.meta.env.VITE_API_URL}/auth/reset-password`,
+                `https://smart-expense-tracker-api-v898.onrender.com/auth/reset-password`,
                 {
                     email,
                     newPassword: password
