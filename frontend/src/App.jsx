@@ -7,9 +7,9 @@ import AddExpense from "./pages/AddExpense";
 import ExpenseHistory from "./pages/ExpenseHistory";
 import Reports from "./pages/Reports";
 import Profile from "./pages/Profile";
-import ForgotPassword from "./pages/ForgotPassword";
-import VerifyOtp from "./pages/VerifyOtp";
-import ResetPassword from "./pages/ResetPassword";
+// import ForgotPassword from "./pages/ForgotPassword";
+// import VerifyOtp from "./pages/VerifyOtp";
+// import ResetPassword from "./pages/ResetPassword";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./layout/Layout";
@@ -21,9 +21,9 @@ function App() {
             {/* Public */}
             <Route path="/" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
+            {/* <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/verify-otp" element={<VerifyOtp />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} /> */}
 
             {/* Protected + Layout */}
             <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
