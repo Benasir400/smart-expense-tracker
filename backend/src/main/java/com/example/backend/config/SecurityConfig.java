@@ -8,22 +8,18 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+   @Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http
-            // disable CSRF for REST APIs
-            .csrf(csrf -> csrf.disable())
+    http
+        .csrf(csrf -> csrf.disable())
+        .cors(cors -> cors.disable()) // IMPORTANT when using custom filter
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/auth/**").permitAll()
+            .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+            .anyRequest().permitAll()
+        );
 
-            // allow all auth endpoints + preflight
-            .authorizeHttpRequests(auth -> auth
-
-                .requestMatchers("/auth/**").permitAll()
-                .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
-
-                .anyRequest().permitAll()
-            );
-
-        return http.build();
-    }
+    return http.build();
+}
 }

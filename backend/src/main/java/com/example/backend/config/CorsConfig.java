@@ -14,21 +14,14 @@ public class CorsConfig {
 
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-
                 registry.addMapping("/**")
-                        // allow your frontend + localhost
-                        .allowedOriginPatterns(
+                        .allowedOrigins(
                                 "http://localhost:5173",
                                 "https://smart-expense-tracker-chi-two.vercel.app"
                         )
-
-                        // IMPORTANT: include OPTIONS for preflight
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-
                         .allowedHeaders("*")
-
-                        // IMPORTANT: keep false to avoid CORS conflict
-                        .allowCredentials(false);
+                        .allowCredentials(true);
             }
         };
     }
